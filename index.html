@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ahmed Mustafa portfolio website for software engineering and AI engineering projects." />
+  <title>Ahmed Mustafa | Software & AI Engineering Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#hero" aria-label="Ahmed Mustafa home">
+        <span class="brand-mark">AM</span>
+        <span class="brand-text">Ahmed Mustafa</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+        <a class="nav-cta" href="assets/resume.pdf" target="_blank" rel="noreferrer">Resume</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero section" id="hero">
+      <div class="hero-layout">
+        <div class="hero-pattern" aria-hidden="true"></div>
+
+        <div class="hero-copy">
+          <div class="eyebrow">Software Engineering · AI Engineering</div>
+          <h1>Ahmed Mustafa</h1>
+          <p class="hero-tagline">Software Engineer — building data &amp; AI systems, end to end.</p>
+          <p class="hero-subline">3rd-year Software Engineering student at MUET · 5 projects shipped, 2 live in production</p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="#projects">View Projects</a>
+            <a class="button button-secondary" href="assets/resume.pdf" target="_blank" rel="noreferrer">Download Resume</a>
+            <a class="hero-link" href="#contact">
+              Get in Touch
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.25 5.5 19 11.25l-5.75 5.75-1.06-1.06 3.95-3.94H5v-1.5h11.14l-3.95-3.94 1.06-1.06Z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <figure class="hero-portrait">
+          <img src="assets/profile.jpg" alt="Portrait of Ahmed Mustafa in a dark blazer" class="profile-photo" loading="eager" />
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="section-heading">
+        <span class="section-kicker">About</span>
+        <h2>Building useful systems with data, software, and ML.</h2>
+      </div>
+
+      <div class="about-layout">
+        <figure class="panel about-portrait">
+          <img src="assets/profile.jpg" alt="Ahmed Mustafa portrait crop" loading="lazy" />
+        </figure>
+
+        <div class="about-stack">
+          <div class="panel bio-panel">
+            <p>
+              Software Engineering student at MUET (CGPA 3.17/4.00) with hands-on experience in software development,
+              data engineering, and machine learning. Delivered 5 end-to-end projects, 2 live in production on Streamlit
+              Cloud, demonstrating full-cycle development from data collection to deployment. Proficient in Python, SQL,
+              and C++.
+            </p>
+          </div>
+
+          <div class="stats-grid" aria-label="Key metrics">
+            <article class="stat-card">
+              <span class="stat-value">5</span>
+              <span class="stat-label">Projects Delivered</span>
+            </article>
+            <article class="stat-card">
+              <span class="stat-value">2</span>
+              <span class="stat-label">Live in Production</span>
+            </article>
+            <article class="stat-card">
+              <span class="stat-value">271K+</span>
+              <span class="stat-label">Records Analyzed</span>
+            </article>
+            <article class="stat-card">
+              <span class="stat-value">94.28%</span>
+              <span class="stat-label">Model Accuracy Achieved</span>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="section-heading">
+        <span class="section-kicker">Projects</span>
+        <h2>Selected work shipped from data to deployment.</h2>
+      </div>
+
+      <div class="project-grid">
+        <article class="panel project-card">
+          <div class="project-topline">
+            <h3>Olympics Data Analysis Web App</h3>
+            <span class="badge badge-live">[LIVE]</span>
+          </div>
+          <p>4-module analytics platform covering medal tallies, country and athlete performance across 120+ years of Olympic data, built on 271,116+ athlete records.</p>
+          <div class="tag-list" aria-label="Tech stack">
+            <span class="tag">Python</span>
+            <span class="tag">Pandas</span>
+            <span class="tag">Streamlit</span>
+            <span class="tag">Plotly</span>
+            <span class="tag">Seaborn</span>
+            <span class="tag">Matplotlib</span>
+          </div>
+          <div class="project-actions">
+            <a class="github-link" href="https://github.com/ahmedmustafa28/Olympics-Data-Analysis" target="_blank" rel="noreferrer" aria-label="Open Olympics Data Analysis Web App on GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+
+        <article class="panel project-card">
+          <div class="project-topline">
+            <h3>WhatsApp Chat Analyzer</h3>
+            <span class="badge badge-live">[LIVE]</span>
+          </div>
+          <p>NLP-powered web app turning raw WhatsApp exports into 7+ analytical insights — activity timelines, emoji analysis, word clouds, and behavioral breakdowns, with a custom Hinglish stop-word filter.</p>
+          <div class="tag-list" aria-label="Tech stack">
+            <span class="tag">Python</span>
+            <span class="tag">Streamlit</span>
+            <span class="tag">NLP</span>
+            <span class="tag">Pandas</span>
+            <span class="tag">Seaborn</span>
+            <span class="tag">Matplotlib</span>
+          </div>
+          <div class="project-actions">
+            <a class="github-link" href="https://github.com/ahmedmustafa28/WhatsApp-Chat-Analyzer" target="_blank" rel="noreferrer" aria-label="Open WhatsApp Chat Analyzer on GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+
+        <article class="panel project-card">
+          <div class="project-topline">
+            <h3>Credit Card Fraud Detection</h3>
+            <span class="badge badge-complete">[COMPLETE]</span>
+          </div>
+          <p>Fraud detection model on 284,807 highly imbalanced transactions (0.17% fraud rate); applied strategic under-sampling and achieved 93.40% test accuracy.</p>
+          <div class="tag-list" aria-label="Tech stack">
+            <span class="tag">Python</span>
+            <span class="tag">scikit-learn</span>
+            <span class="tag">Pandas</span>
+            <span class="tag">NumPy</span>
+          </div>
+          <div class="project-actions">
+            <a class="github-link" href="https://github.com/ahmedmustafa28/Credit-Card-Fraud-Detection" target="_blank" rel="noreferrer" aria-label="Open Credit Card Fraud Detection on GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+
+        <article class="panel project-card">
+          <div class="project-topline">
+            <h3>Campus Placement Prediction</h3>
+            <span class="badge badge-complete">[COMPLETE]</span>
+          </div>
+          <p>Logistic Regression classifier predicting student employability from CGPA and IQ, achieving 80% test accuracy with decision boundary visualization.</p>
+          <div class="tag-list" aria-label="Tech stack">
+            <span class="tag">Python</span>
+            <span class="tag">scikit-learn</span>
+            <span class="tag">Pandas</span>
+            <span class="tag">Matplotlib</span>
+            <span class="tag">mlxtend</span>
+          </div>
+          <div class="project-actions">
+            <a class="github-link" href="https://github.com/ahmedmustafa28/placement-prediction-ml" target="_blank" rel="noreferrer" aria-label="Open Campus Placement Prediction on GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+
+        <article class="panel project-card">
+          <div class="project-topline">
+            <h3>InfoSec File Encryption Tool</h3>
+            <span class="badge badge-complete">[COMPLETE]</span>
+          </div>
+          <p>Desktop security app with AES-based encryption, automatic key management, and SHA-256 file integrity verification.</p>
+          <div class="tag-list" aria-label="Tech stack">
+            <span class="tag">Python</span>
+            <span class="tag">Tkinter</span>
+            <span class="tag">Cryptography</span>
+            <span class="tag">hashlib</span>
+            <span class="tag">Fernet/AES</span>
+          </div>
+          <div class="project-actions">
+            <a class="github-link" href="https://github.com/ahmedmustafa28/infosec-file-encryption-project" target="_blank" rel="noreferrer" aria-label="Open InfoSec File Encryption Tool on GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="skills">
+      <div class="section-heading">
+        <span class="section-kicker">Skills</span>
+        <h2>Technical depth across development, data, and security.</h2>
+      </div>
+
+      <div class="skills-grid">
+        <article class="panel skill-group">
+          <h3>Programming Languages</h3>
+          <div class="tag-list">
+            <span class="tag">Python</span>
+            <span class="tag">C++</span>
+            <span class="tag">SQL</span>
+          </div>
+        </article>
+        <article class="panel skill-group">
+          <h3>ML / Data Science</h3>
+          <div class="tag-list">
+            <span class="tag">scikit-learn</span>
+            <span class="tag">Pandas</span>
+            <span class="tag">NumPy</span>
+            <span class="tag">NLP</span>
+            <span class="tag">Feature Engineering</span>
+            <span class="tag">Statistical Analysis</span>
+            <span class="tag">Model Evaluation</span>
+          </div>
+        </article>
+        <article class="panel skill-group">
+          <h3>Data Visualization</h3>
+          <div class="tag-list">
+            <span class="tag">Matplotlib</span>
+            <span class="tag">Seaborn</span>
+            <span class="tag">Plotly</span>
+          </div>
+        </article>
+        <article class="panel skill-group">
+          <h3>Tools &amp; Platforms</h3>
+          <div class="tag-list">
+            <span class="tag">Streamlit</span>
+            <span class="tag">Tkinter</span>
+            <span class="tag">Git</span>
+            <span class="tag">GitHub</span>
+            <span class="tag">Jupyter Notebook</span>
+            <span class="tag">VS Code</span>
+          </div>
+        </article>
+        <article class="panel skill-group skill-group-wide">
+          <h3>Security</h3>
+          <div class="tag-list">
+            <span class="tag">Fernet/AES Encryption</span>
+            <span class="tag">SHA-256 Hashing</span>
+            <span class="tag">Symmetric Cryptography</span>
+            <span class="tag">Key Management</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="experience">
+      <div class="section-heading">
+        <span class="section-kicker">Certifications</span>
+        <h2>Certifications</h2>
+      </div>
+
+      <article class="panel experience-card">
+        <article class="panel certificate-card">
+          <div class="certificate-topline">
+            <div class="certificate-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-5-2.6L8 20V4a1 1 0 0 1 1-1Zm1.5 3.25v1.5h7v-1.5h-7ZM8.5 10v1.5h7V10h-7Zm0 3.25v1.5h4v-1.5h-4Z"/></svg>
+            </div>
+            <span class="certificate-platform">NAVTTC</span>
+          </div>
+          <h3>Advanced Python Programming</h3>
+          <a class="certificate-link" href="assets/certificates/navttc-python.pdf" target="_blank" rel="noreferrer">View Certificate</a>
+        </article>
+
+        <article class="panel certificate-card">
+          <div class="certificate-topline">
+            <div class="certificate-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-5-2.6L8 20V4a1 1 0 0 1 1-1Zm1.5 3.25v1.5h7v-1.5h-7ZM8.5 10v1.5h7V10h-7Zm0 3.25v1.5h4v-1.5h-4Z"/></svg>
+            </div>
+            <span class="certificate-platform">DataCamp</span>
+          </div>
+          <h3>Introduction to NumPy</h3>
+          <a class="certificate-link" href="assets/certificates/datacamp-numpy.pdf" target="_blank" rel="noreferrer">View Certificate</a>
+        </article>
+
+        <article class="panel certificate-card">
+          <div class="certificate-topline">
+            <div class="certificate-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-5-2.6L8 20V4a1 1 0 0 1 1-1Zm1.5 3.25v1.5h7v-1.5h-7ZM8.5 10v1.5h7V10h-7Zm0 3.25v1.5h4v-1.5h-4Z"/></svg>
+            </div>
+            <span class="certificate-platform">NFTP</span>
+          </div>
+          <h3>Web Development</h3>
+          <a class="certificate-link" href="assets/certificates/nftp-web-dev.pdf" target="_blank" rel="noreferrer">View Certificate</a>
+        </article>
+
+        <article class="panel certificate-card">
+          <div class="certificate-topline">
+            <div class="certificate-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-5-2.6L8 20V4a1 1 0 0 1 1-1Zm1.5 3.25v1.5h7v-1.5h-7ZM8.5 10v1.5h7V10h-7Zm0 3.25v1.5h4v-1.5h-4Z"/></svg>
+            </div>
+            <span class="certificate-platform">Coursera</span>
+          </div>
+          <h3>Prompt Engineering for Developers</h3>
+          <a class="certificate-link" href="assets/certificates/coursera-prompt-engineering.pdf" target="_blank" rel="noreferrer">View Certificate</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section contact-section" id="contact">
+      <div class="section-heading">
+        <span class="section-kicker">Contact</span>
+        <h2>Let’s build something.</h2>
+      </div>
+
+      <div class="panel contact-card">
+        <div class="contact-grid">
+          <a href="mailto:bhurgrimustafa203@gmail.com">bhurgrimustafa203@gmail.com</a>
+          <a href="tel:+923194764775">+92 319 476 4775</a>
+          <a href="https://github.com/ahmedmustafa28" target="_blank" rel="noreferrer">github.com/ahmedmustafa28</a>
+          <a href="https://linkedin.com/in/ahmed-mustafa-baa587290" target="_blank" rel="noreferrer">linkedin.com/in/ahmed-mustafa-baa587290</a>
+          <span>Hyderabad, Sindh, Pakistan</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 Ahmed Mustafa. Built with HTML, CSS, and vanilla JavaScript.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
