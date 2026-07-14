@@ -4,6 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Ahmed Mustafa portfolio website for software engineering and AI engineering projects." />
+  <meta name="theme-color" content="#121212" />
+  <link rel="canonical" href="https://YOUR-DOMAIN-HERE.com" />
+  <link rel="icon" href="/assets/favicon.ico" />
+  <meta property="og:title" content="Ahmed Mustafa | Software & AI Engineering Portfolio" />
+  <meta property="og:description" content="Ahmed Mustafa portfolio website for software engineering and AI engineering projects." />
+  <meta property="og:image" content="/assets/og-preview.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://YOUR-DOMAIN-HERE.com" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ahmed Mustafa | Software & AI Engineering Portfolio" />
+  <meta name="twitter:description" content="Ahmed Mustafa portfolio website for software engineering and AI engineering projects." />
+  <meta name="twitter:image" content="/assets/og-preview.png" />
   <title>Ahmed Mustafa | Software & AI Engineering Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,10 +32,18 @@
         <span class="brand-text">Ahmed Mustafa</span>
       </a>
 
-      <div class="nav-links">
+      <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" id="primary-navigation">
         <a href="#about">About</a>
         <a href="#projects">Projects</a>
         <a href="#skills">Skills</a>
+        <a href="#experience">Experience</a>
+        <a href="#certificates">Certifications</a>
         <a href="#contact">Contact</a>
         <a class="nav-cta" href="assets/resume.pdf" target="_blank" rel="noreferrer">Resume</a>
       </div>
@@ -108,6 +128,9 @@
 
       <div class="project-grid">
         <article class="panel project-card">
+          <div class="project-preview">
+            <img src="/assets/projects/olympics-analysis.png" alt="Screenshot preview of the Olympics Data Analysis Web App" loading="lazy" />
+          </div>
           <div class="project-topline">
             <h3>Olympics Data Analysis Web App</h3>
             <span class="badge badge-live">[LIVE]</span>
@@ -122,6 +145,7 @@
             <span class="tag">Matplotlib</span>
           </div>
           <div class="project-actions">
+            <a class="demo-link" href="https://REPLACE-WITH-OLYMPICS-STREAMLIT-URL" target="_blank" rel="noreferrer">Live Demo</a>
             <a class="github-link" href="https://github.com/ahmedmustafa28/Olympics-Data-Analysis" target="_blank" rel="noreferrer" aria-label="Open Olympics Data Analysis Web App on GitHub">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
               GitHub
@@ -130,6 +154,9 @@
         </article>
 
         <article class="panel project-card">
+          <div class="project-preview">
+            <img src="/assets/projects/whatsapp-analyzer.png" alt="Screenshot preview of the WhatsApp Chat Analyzer" loading="lazy" />
+          </div>
           <div class="project-topline">
             <h3>WhatsApp Chat Analyzer</h3>
             <span class="badge badge-live">[LIVE]</span>
@@ -144,6 +171,7 @@
             <span class="tag">Matplotlib</span>
           </div>
           <div class="project-actions">
+            <a class="demo-link" href="https://REPLACE-WITH-WHATSAPP-STREAMLIT-URL" target="_blank" rel="noreferrer">Live Demo</a>
             <a class="github-link" href="https://github.com/ahmedmustafa28/WhatsApp-Chat-Analyzer" target="_blank" rel="noreferrer" aria-label="Open WhatsApp Chat Analyzer on GitHub">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
               GitHub
@@ -152,6 +180,9 @@
         </article>
 
         <article class="panel project-card">
+          <div class="project-preview">
+            <img src="/assets/projects/fraud-detection.png" alt="Screenshot preview of the Credit Card Fraud Detection project" loading="lazy" />
+          </div>
           <div class="project-topline">
             <h3>Credit Card Fraud Detection</h3>
             <span class="badge badge-complete">[COMPLETE]</span>
@@ -172,6 +203,9 @@
         </article>
 
         <article class="panel project-card">
+          <div class="project-preview">
+            <img src="/assets/projects/placement-prediction.png" alt="Screenshot preview of the Campus Placement Prediction project" loading="lazy" />
+          </div>
           <div class="project-topline">
             <h3>Campus Placement Prediction</h3>
             <span class="badge badge-complete">[COMPLETE]</span>
@@ -193,6 +227,9 @@
         </article>
 
         <article class="panel project-card">
+          <div class="project-preview">
+            <img src="/assets/projects/infosec-encryption.png" alt="Screenshot preview of the InfoSec File Encryption Tool project" loading="lazy" />
+          </div>
           <div class="project-topline">
             <h3>InfoSec File Encryption Tool</h3>
             <span class="badge badge-complete">[COMPLETE]</span>
@@ -275,16 +312,93 @@
 
     <section class="section" id="experience">
       <div class="section-heading">
+        <span class="section-kicker">Experience</span>
+        <h2>Experience &amp; Involvement</h2>
+      </div>
+
+      <div class="timeline">
+        <article class="panel timeline-card timeline-current">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-head">
+              <div>
+                <h3>AI Developer</h3>
+                <p class="timeline-org">Team Axioms</p>
+              </div>
+              <span class="badge badge-live">[Current]</span>
+            </div>
+            <p>Building and shipping applied AI solutions, working across the ML development lifecycle from experimentation to deployment.</p>
+          </div>
+        </article>
+
+        <article class="panel timeline-card timeline-current">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-head">
+              <div>
+                <h3>Director of Visuals</h3>
+                <p class="timeline-org">WOH Sindh Chapter</p>
+              </div>
+              <span class="badge badge-live">[Current]</span>
+            </div>
+            <p>Leading visual content strategy for a 50+ member university chapter, coordinating 3 cross-functional sub-teams across 10+ events, and reducing revision cycles by 30% through a structured creative review process.</p>
+          </div>
+        </article>
+
+        <article class="panel timeline-card timeline-current">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-head">
+              <div>
+                <h3>Campus Ambassador</h3>
+                <p class="timeline-org">Devsinc</p>
+              </div>
+              <span class="badge badge-live">[Current]</span>
+            </div>
+            <p>Representing Devsinc on campus, connecting students with developer community events, opportunities, and resources.</p>
+          </div>
+        </article>
+
+        <article class="panel timeline-card timeline-current">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-head">
+              <div>
+                <h3>Volunteer</h3>
+                <p class="timeline-org">SindhTech Community</p>
+              </div>
+              <span class="badge badge-live">[Current]</span>
+            </div>
+            <p>Actively contributing to a regional tech community focused on growing the local developer ecosystem.</p>
+          </div>
+        </article>
+
+        <article class="panel timeline-card timeline-former">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <div class="timeline-head">
+              <div>
+                <h3>Director of Visuals</h3>
+                <p class="timeline-org">WOH MUET Chapter</p>
+              </div>
+              <span class="badge badge-complete">[Former]</span>
+            </div>
+            <p>Led design and visual strategy for the MUET chapter, mentoring junior designers and maintaining brand consistency across campaigns.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="certificates">
+      <div class="section-heading">
         <span class="section-kicker">Certifications</span>
         <h2>Certifications</h2>
       </div>
 
-      <article class="panel experience-card">
+      <div class="certificate-grid">
         <article class="panel certificate-card">
           <div class="certificate-topline">
-            <div class="certificate-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-5-2.6L8 20V4a1 1 0 0 1 1-1Zm1.5 3.25v1.5h7v-1.5h-7ZM8.5 10v1.5h7V10h-7Zm0 3.25v1.5h4v-1.5h-4Z"/></svg>
-            </div>
+            <div class="certificate-icon certificate-icon-navttc" aria-hidden="true">N</div>
             <span class="certificate-platform">NAVTTC</span>
           </div>
           <h3>Advanced Python Programming</h3>
@@ -293,9 +407,7 @@
 
         <article class="panel certificate-card">
           <div class="certificate-topline">
-            <div class="certificate-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-5-2.6L8 20V4a1 1 0 0 1 1-1Zm1.5 3.25v1.5h7v-1.5h-7ZM8.5 10v1.5h7V10h-7Zm0 3.25v1.5h4v-1.5h-4Z"/></svg>
-            </div>
+            <div class="certificate-icon certificate-icon-datacamp" aria-hidden="true">DC</div>
             <span class="certificate-platform">DataCamp</span>
           </div>
           <h3>Introduction to NumPy</h3>
@@ -304,9 +416,7 @@
 
         <article class="panel certificate-card">
           <div class="certificate-topline">
-            <div class="certificate-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-5-2.6L8 20V4a1 1 0 0 1 1-1Zm1.5 3.25v1.5h7v-1.5h-7ZM8.5 10v1.5h7V10h-7Zm0 3.25v1.5h4v-1.5h-4Z"/></svg>
-            </div>
+            <div class="certificate-icon certificate-icon-nftp" aria-hidden="true">NFTP</div>
             <span class="certificate-platform">NFTP</span>
           </div>
           <h3>Web Development</h3>
@@ -315,9 +425,7 @@
 
         <article class="panel certificate-card">
           <div class="certificate-topline">
-            <div class="certificate-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-5-2.6L8 20V4a1 1 0 0 1 1-1Zm1.5 3.25v1.5h7v-1.5h-7ZM8.5 10v1.5h7V10h-7Zm0 3.25v1.5h4v-1.5h-4Z"/></svg>
-            </div>
+            <div class="certificate-icon certificate-icon-coursera" aria-hidden="true">C</div>
             <span class="certificate-platform">Coursera</span>
           </div>
           <h3>Prompt Engineering for Developers</h3>
