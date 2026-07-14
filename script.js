@@ -1,14 +1,108 @@
 const heroSection = document.querySelector('.hero');
 const heroPattern = document.querySelector('.hero-pattern');
+const pageLoader = document.querySelector('.page-loader');
+const pageLoaderCount = document.querySelector('.page-loader-count');
 const nav = document.querySelector('.nav');
 const navToggle = document.querySelector('.nav-toggle');
 const navLinks = document.querySelector('.nav-links');
+const themeToggle = document.querySelector('.theme-toggle');
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const reduceMotion = motionQuery.matches;
+const loaderStartTime = performance.now();
+const loaderDuration = 800;
 let animationFrameId = 0;
 let lastPointerEvent = null;
 let activeNavLink = null;
 let menuOpen = false;
+let currentTheme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+let loaderFrameId = 0;
+
+function getNextTheme(theme) {
+  return theme === 'light' ? 'dark' : 'light';
+}
+
+function setTheme(theme, persist = true) {
+  currentTheme = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = currentTheme;
+  document.documentElement.style.colorScheme = currentTheme;
+
+  if (themeToggle) {
+    const nextTheme = getNextTheme(currentTheme);
+    themeToggle.setAttribute('aria-label', `Switch to ${nextTheme} theme`);
+    themeToggle.setAttribute('aria-pressed', String(currentTheme === 'light'));
+  }
+
+  if (persist) {
+    try {
+      localStorage.setItem('theme', currentTheme);
+    } catch (error) {
+      // Ignore storage errors.
+    }
+  }
+}
+
+function toggleTheme() {
+  setTheme(getNextTheme(currentTheme));
+}
+
+function hideLoader() {
+  if (!pageLoader) {
+    return;
+  }
+
+  document.documentElement.classList.add('is-ready');
+}
+
+function updateLoaderProgress(timestamp) {
+  if (!pageLoaderCount) {
+    return;
+  }
+
+  const elapsed = timestamp - loaderStartTime;
+  const progress = reduceMotion ? 1 : Math.min(elapsed / loaderDuration, 1);
+  const percent = reduceMotion ? 100 : Math.round(progress * 100);
+
+  pageLoaderCount.textContent = `${String(percent).padStart(3, '0')}%`;
+
+  if (!reduceMotion && progress < 1) {
+    loaderFrameId = window.requestAnimationFrame(updateLoaderProgress);
+    return;
+  }
+
+  pageLoaderCount.textContent = '100%';
+}
+
+function startLoaderProgress() {
+  if (!pageLoader || !pageLoaderCount) {
+    return;
+  }
+
+  if (reduceMotion) {
+    pageLoaderCount.textContent = '100%';
+    return;
+  }
+
+  loaderFrameId = window.requestAnimationFrame(updateLoaderProgress);
+}
+
+function scheduleLoaderHide() {
+  if (!pageLoader) {
+    return;
+  }
+
+  const elapsed = performance.now() - loaderStartTime;
+  const remaining = Math.max(0, loaderDuration - elapsed);
+  window.setTimeout(() => {
+    if (pageLoaderCount) {
+      pageLoaderCount.textContent = '100%';
+    }
+
+    hideLoader();
+  }, remaining);
+}
+
+setTheme(currentTheme, false);
+startLoaderProgress();
 
 function updateHeroGlow(event) {
   if (!heroSection || !heroPattern || reduceMotion) {
@@ -136,6 +230,16 @@ if (heroSection) {
 
 if (navToggle) {
   navToggle.addEventListener('click', toggleMenu);
+}
+
+if (themeToggle) {
+  themeToggle.addEventListener('click', toggleTheme);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', scheduleLoaderHide, { once: true });
+} else {
+  scheduleLoaderHide();
 }
 
 document.addEventListener('keydown', (event) => {
