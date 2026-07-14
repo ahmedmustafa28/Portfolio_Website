@@ -2,6 +2,7 @@ const heroSection = document.querySelector('.hero');
 const heroPattern = document.querySelector('.hero-pattern');
 const pageLoader = document.querySelector('.page-loader');
 const pageLoaderCount = document.querySelector('.page-loader-count');
+const loaderBar = document.querySelector('.loader-bar');
 const nav = document.querySelector('.nav');
 const navToggle = document.querySelector('.nav-toggle');
 const navLinks = document.querySelector('.nav-links');
@@ -63,6 +64,9 @@ function updateLoaderProgress(timestamp) {
   const percent = reduceMotion ? 100 : Math.round(progress * 100);
 
   pageLoaderCount.textContent = `${String(percent).padStart(3, '0')}%`;
+  if (loaderBar) {
+    loaderBar.style.width = `${percent}%`;
+  }
 
   if (!reduceMotion && progress < 1) {
     loaderFrameId = window.requestAnimationFrame(updateLoaderProgress);
@@ -70,6 +74,9 @@ function updateLoaderProgress(timestamp) {
   }
 
   pageLoaderCount.textContent = '100%';
+  if (loaderBar) {
+    loaderBar.style.width = '100%';
+  }
 }
 
 function startLoaderProgress() {
@@ -79,6 +86,9 @@ function startLoaderProgress() {
 
   if (reduceMotion) {
     pageLoaderCount.textContent = '100%';
+    if (loaderBar) {
+      loaderBar.style.width = '100%';
+    }
     return;
   }
 
@@ -95,6 +105,9 @@ function scheduleLoaderHide() {
   window.setTimeout(() => {
     if (pageLoaderCount) {
       pageLoaderCount.textContent = '100%';
+    }
+    if (loaderBar) {
+      loaderBar.style.width = '100%';
     }
 
     hideLoader();
@@ -320,3 +333,341 @@ window.addEventListener('resize', () => {
     closeMenu(false);
   }
 });
+
+/* --- Hero Neural Particle Canvas --- */
+function initHeroCanvas() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let animationId = null;
+  const maxParticles = 65;
+  const connectionDistance = 110;
+  let mouse = { x: null, y: null, radius: 150 };
+
+  function resizeCanvas() {
+    canvas.width = canvas.parentElement.offsetWidth;
+    canvas.height = canvas.parentElement.offsetHeight;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.radius = Math.random() * 1.5 + 1;
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 122, 26, 0.4)';
+      ctx.fill();
+    }
+  }
+
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < maxParticles; i++) {
+      particles.push(new Particle());
+    }
+  }
+  initParticles();
+
+  const parent = canvas.parentElement;
+  parent.addEventListener('pointermove', (e) => {
+    const rect = parent.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+
+  parent.addEventListener('pointerleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < connectionDistance) {
+          const alpha = (1 - dist / connectionDistance) * 0.12;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(255, 122, 26, ${alpha})`;
+          ctx.lineWidth = 0.75;
+          ctx.stroke();
+        }
+      }
+
+      if (mouse.x !== null && mouse.y !== null) {
+        const dx = particles[i].x - mouse.x;
+        const dy = particles[i].y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < mouse.radius) {
+          const alpha = (1 - dist / mouse.radius) * 0.2;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(255, 122, 26, ${alpha})`;
+          ctx.lineWidth = 0.75;
+          ctx.stroke();
+        }
+      }
+    }
+
+    animationId = requestAnimationFrame(animate);
+  }
+
+  if (!reduceMotion) {
+    animate();
+  }
+}
+
+/* --- Card Cursor-Tracking Glow Effect --- */
+function initCardGlows() {
+  const cards = document.querySelectorAll('.project-card, .certificate-card');
+  cards.forEach(card => {
+    card.addEventListener('pointermove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+}
+
+/* --- Scroll-Triggered Section Reveals --- */
+function initScrollReveals() {
+  const sections = document.querySelectorAll('.reveal-section');
+  if (sections.length === 0) return;
+
+  if (reduceMotion) {
+    sections.forEach(s => s.classList.add('revealed'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    root: null,
+    rootMargin: '0px 0px -10% 0px',
+    threshold: 0.1
+  });
+
+  sections.forEach(s => observer.observe(s));
+}
+
+/* --- Project Category Filters --- */
+function initProjectFilters() {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectGrid = document.querySelector('.project-grid');
+  if (filterBtns.length === 0 || !projectGrid) return;
+
+  const projects = projectGrid.querySelectorAll('.project-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+
+      const category = btn.getAttribute('data-filter');
+
+      projects.forEach(project => {
+        const categories = project.getAttribute('data-category').split(' ');
+        if (category === 'all' || categories.includes(category)) {
+          project.style.display = '';
+          setTimeout(() => {
+            project.style.opacity = '1';
+            project.style.transform = 'scale(1)';
+          }, 50);
+        } else {
+          project.style.opacity = '0';
+          project.style.transform = 'scale(0.96)';
+          project.style.display = 'none';
+        }
+      });
+    });
+  });
+}
+
+/* --- Interactive Encryption Simulator --- */
+function initCryptoSimulator() {
+  const simulator = document.querySelector('.crypto-simulator');
+  if (!simulator) return;
+
+  const input = simulator.querySelector('.sim-input');
+  const encryptBtn = simulator.querySelector('.encrypt-btn');
+  const decryptBtn = simulator.querySelector('.decrypt-btn');
+  const output = simulator.querySelector('.sim-output');
+  const status = simulator.querySelector('.sim-status');
+
+  let currentCiphertext = '';
+
+  function mockEncrypt(text) {
+    if (!text) return '';
+    const b64 = btoa(unescape(encodeURIComponent(text)));
+    return 'AES256_' + b64.replace(/[a-zA-Z]/g, (c) => {
+      return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+    });
+  }
+
+  function mockDecrypt(ciphertext) {
+    if (!ciphertext || !ciphertext.startsWith('AES256_')) return '';
+    const rot = ciphertext.substring(7);
+    const b64 = rot.replace(/[a-zA-Z]/g, (c) => {
+      return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+    });
+    try {
+      return decodeURIComponent(escape(atob(b64)));
+    } catch (e) {
+      return '[Decryption Error: Invalid Padding]';
+    }
+  }
+
+  encryptBtn.addEventListener('click', () => {
+    const text = input.value.trim();
+    if (!text) return;
+
+    status.textContent = 'ENCRYPTING...';
+    status.style.color = '#ff7a1a';
+    encryptBtn.disabled = true;
+
+    window.setTimeout(() => {
+      currentCiphertext = mockEncrypt(text);
+      output.textContent = currentCiphertext;
+      status.textContent = 'ENCRYPTED';
+      status.style.color = '#10b981';
+      encryptBtn.disabled = false;
+      decryptBtn.disabled = false;
+    }, 450);
+  });
+
+  decryptBtn.addEventListener('click', () => {
+    if (!currentCiphertext) return;
+
+    status.textContent = 'DECRYPTING...';
+    status.style.color = '#ff7a1a';
+    decryptBtn.disabled = true;
+
+    window.setTimeout(() => {
+      const originalText = mockDecrypt(currentCiphertext);
+      output.textContent = originalText;
+      status.textContent = 'DECRYPTED';
+      status.style.color = '#10b981';
+      decryptBtn.disabled = true;
+      currentCiphertext = '';
+    }, 450);
+  });
+
+  input.addEventListener('input', () => {
+    encryptBtn.disabled = input.value.trim() === '';
+    decryptBtn.disabled = true;
+    output.textContent = '--';
+    status.textContent = 'READY';
+    status.style.color = '#10b981';
+    currentCiphertext = '';
+  });
+}
+
+/* --- Lightbox Modal --- */
+function initCertLightbox() {
+  const modal = document.getElementById('cert-modal');
+  if (!modal) return;
+
+  const modalClose = modal.querySelector('.modal-close');
+  const modalOverlay = modal.querySelector('.modal-overlay');
+  const modalContent = modal.querySelector('.modal-content');
+  const certLinks = document.querySelectorAll('.certificate-link');
+
+  function openModal(href) {
+    modalContent.innerHTML = '';
+    let element;
+
+    if (href.endsWith('.pdf')) {
+      element = document.createElement('iframe');
+      element.src = href;
+    } else {
+      element = document.createElement('img');
+      element.src = href;
+      element.alt = 'Certificate';
+    }
+
+    modalContent.appendChild(element);
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    window.setTimeout(() => {
+      modalContent.innerHTML = '';
+    }, 280);
+  }
+
+  certLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && (href.endsWith('.pdf') || href.endsWith('.png') || href.endsWith('.jpg') || href.endsWith('.jpeg'))) {
+        e.preventDefault();
+        openModal(href);
+      }
+    });
+  });
+
+  modalClose.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+}
+
+// Start interactive features
+initHeroCanvas();
+initCardGlows();
+initScrollReveals();
+initProjectFilters();
+initCryptoSimulator();
+initCertLightbox();

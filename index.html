@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Ahmed Mustafa portfolio website for software engineering and AI engineering projects." />
   <meta name="theme-color" content="#121212" />
-  <link rel="canonical" href="https://YOUR-DOMAIN-HERE.com" />
-  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="canonical" href="https://ahmedmustafa28.github.io" />
+  <link rel="icon" href="assets/favicon.ico" />
   <meta property="og:title" content="Ahmed Mustafa | Software & AI Engineering Portfolio" />
   <meta property="og:description" content="Ahmed Mustafa portfolio website for software engineering and AI engineering projects." />
-  <meta property="og:image" content="/assets/og-preview.png" />
+  <meta property="og:image" content="assets/og-preview.png" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://YOUR-DOMAIN-HERE.com" />
+  <meta property="og:url" content="https://ahmedmustafa28.github.io" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Ahmed Mustafa | Software & AI Engineering Portfolio" />
   <meta name="twitter:description" content="Ahmed Mustafa portfolio website for software engineering and AI engineering projects." />
-  <meta name="twitter:image" content="/assets/og-preview.png" />
+  <meta name="twitter:image" content="assets/og-preview.png" />
   <title>Ahmed Mustafa | Software & AI Engineering Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,7 +37,14 @@
 </head>
 <body>
   <div class="page-loader" aria-hidden="true">
-    <span class="page-loader-count" aria-live="polite">000%</span>
+    <div class="loader-panel loader-panel-top"></div>
+    <div class="loader-panel loader-panel-bottom"></div>
+    <div class="loader-content">
+      <span class="page-loader-count" aria-live="polite">000%</span>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar"></div>
+      </div>
+    </div>
   </div>
 
   <a class="skip-link" href="#main">Skip to content</a>
@@ -73,10 +80,31 @@
   <main id="main">
     <section class="hero section" id="hero">
       <div class="hero-layout">
+        <canvas id="hero-canvas"></canvas>
         <div class="hero-pattern" aria-hidden="true"></div>
 
         <div class="hero-copy">
-          <div class="eyebrow">Software Engineering · AI Engineering</div>
+          <div class="eyebrow ticker-wrap" aria-label="Key focuses">
+            <div class="ticker-track">
+              <span>AI Engineer</span>
+              <span class="ticker-dot"></span>
+              <span>Solving Problems</span>
+              <span class="ticker-dot"></span>
+              <span>Building AI Solutions</span>
+              <span class="ticker-dot"></span>
+              <span>Automation</span>
+              <span class="ticker-dot"></span>
+              <!-- Duplicate set for seamless infinite scroll -->
+              <span>AI Engineer</span>
+              <span class="ticker-dot"></span>
+              <span>Solving Problems</span>
+              <span class="ticker-dot"></span>
+              <span>Building AI Solutions</span>
+              <span class="ticker-dot"></span>
+              <span>Automation</span>
+              <span class="ticker-dot"></span>
+            </div>
+          </div>
           <h1>Ahmed Mustafa</h1>
           <p class="hero-tagline">Software Engineer — building data &amp; AI systems, end to end.</p>
           <p class="hero-subline">3rd-year Software Engineering student at MUET · 5 projects shipped, 2 live in production</p>
@@ -97,7 +125,7 @@
       </div>
     </section>
 
-    <section class="section" id="about">
+    <section class="section reveal-section" id="about">
       <div class="section-heading">
         <span class="section-kicker">About</span>
         <h2>Building useful systems with data, software, and ML.</h2>
@@ -140,16 +168,23 @@
       </div>
     </section>
 
-    <section class="section" id="projects">
+    <section class="section reveal-section" id="projects">
       <div class="section-heading">
         <span class="section-kicker">Projects</span>
         <h2>Selected work shipped from data to deployment.</h2>
       </div>
 
+      <div class="project-filters" role="tablist" aria-label="Filter projects">
+        <button class="filter-btn active" role="tab" aria-selected="true" data-filter="all">All</button>
+        <button class="filter-btn" role="tab" aria-selected="false" data-filter="web-app">Web Apps</button>
+        <button class="filter-btn" role="tab" aria-selected="false" data-filter="ml-ds">ML / Data Science</button>
+        <button class="filter-btn" role="tab" aria-selected="false" data-filter="desktop">Desktop Tools</button>
+      </div>
+
       <div class="project-grid">
-        <article class="panel project-card">
+        <article class="panel project-card" data-category="web-app ml-ds">
           <div class="project-preview">
-            <img src="/assets/projects/olympics-analysis.png" alt="Screenshot preview of the Olympics Data Analysis Web App" loading="lazy" />
+            <img src="assets/projects/olympics-analysis.png" alt="Screenshot preview of the Olympics Data Analysis Web App" loading="lazy" />
           </div>
           <div class="project-topline">
             <h3>Olympics Data Analysis Web App</h3>
@@ -175,7 +210,7 @@
 
         <article class="panel project-card">
           <div class="project-preview">
-            <img src="/assets/projects/whatsapp-analyzer.png" alt="Screenshot preview of the WhatsApp Chat Analyzer" loading="lazy" />
+            <img src="assets/projects/whatsapp-analyzer.png" alt="Screenshot preview of the WhatsApp Chat Analyzer" loading="lazy" />
           </div>
           <div class="project-topline">
             <h3>WhatsApp Chat Analyzer</h3>
@@ -191,7 +226,7 @@
             <span class="tag">Matplotlib</span>
           </div>
           <div class="project-actions">
-            <a class="demo-link" href="https://REPLACE-WITH-WHATSAPP-STREAMLIT-URL" target="_blank" rel="noreferrer">Live Demo</a>
+            <a class="demo-link" href="https://whatsapp-chat-analyzer.streamlit.app/" target="_blank" rel="noreferrer">Live Demo</a>
             <a class="github-link" href="https://github.com/ahmedmustafa28/WhatsApp-Chat-Analyzer" target="_blank" rel="noreferrer" aria-label="Open WhatsApp Chat Analyzer on GitHub">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
               GitHub
@@ -199,9 +234,9 @@
           </div>
         </article>
 
-        <article class="panel project-card">
+        <article class="panel project-card" data-category="ml-ds">
           <div class="project-preview">
-            <img src="/assets/projects/fraud-detection.png" alt="Screenshot preview of the Credit Card Fraud Detection project" loading="lazy" />
+            <img src="assets/projects/fraud-detection.png" alt="Screenshot preview of the Credit Card Fraud Detection project" loading="lazy" />
           </div>
           <div class="project-topline">
             <h3>Credit Card Fraud Detection</h3>
@@ -222,9 +257,9 @@
           </div>
         </article>
 
-        <article class="panel project-card">
+        <article class="panel project-card" data-category="ml-ds">
           <div class="project-preview">
-            <img src="/assets/projects/placement-prediction.png" alt="Screenshot preview of the Campus Placement Prediction project" loading="lazy" />
+            <img src="assets/projects/placement-prediction.png" alt="Screenshot preview of the Campus Placement Prediction project" loading="lazy" />
           </div>
           <div class="project-topline">
             <h3>Campus Placement Prediction</h3>
@@ -246,15 +281,32 @@
           </div>
         </article>
 
-        <article class="panel project-card">
+        <article class="panel project-card" data-category="desktop">
           <div class="project-preview">
-            <img src="/assets/projects/infosec-encryption.png" alt="Screenshot preview of the InfoSec File Encryption Tool project" loading="lazy" />
+            <img src="assets/projects/infosec-encryption.png" alt="Screenshot preview of the InfoSec File Encryption Tool project" loading="lazy" />
           </div>
           <div class="project-topline">
             <h3>InfoSec File Encryption Tool</h3>
             <span class="badge badge-complete">[COMPLETE]</span>
           </div>
           <p>Desktop security app with AES-based encryption, automatic key management, and SHA-256 file integrity verification.</p>
+          <div class="crypto-simulator">
+            <div class="sim-header">
+              <span>AES-256 SIMULATOR</span>
+              <span class="sim-status">READY</span>
+            </div>
+            <div class="sim-body">
+              <input type="text" class="sim-input" placeholder="Enter text to encrypt..." aria-label="Simulator input">
+              <div class="sim-buttons">
+                <button type="button" class="sim-btn encrypt-btn">Encrypt</button>
+                <button type="button" class="sim-btn decrypt-btn" disabled>Decrypt</button>
+              </div>
+              <div class="sim-output-box">
+                <span class="sim-label">Ciphertext:</span>
+                <code class="sim-output">--</code>
+              </div>
+            </div>
+          </div>
           <div class="tag-list" aria-label="Tech stack">
             <span class="tag">Python</span>
             <span class="tag">Tkinter</span>
@@ -272,7 +324,7 @@
       </div>
     </section>
 
-    <section class="section" id="skills">
+    <section class="section reveal-section" id="skills">
       <div class="section-heading">
         <span class="section-kicker">Skills</span>
         <h2>Technical depth across development, data, and security.</h2>
@@ -330,7 +382,7 @@
       </div>
     </section>
 
-    <section class="section" id="experience">
+    <section class="section reveal-section" id="experience">
       <div class="section-heading">
         <span class="section-kicker">Experience</span>
         <h2>Experience &amp; Involvement</h2>
@@ -409,7 +461,7 @@
       </div>
     </section>
 
-    <section class="section" id="certificates">
+    <section class="section reveal-section" id="certificates">
       <div class="section-heading">
         <span class="section-kicker">Certifications</span>
         <h2>Certifications</h2>
@@ -454,7 +506,7 @@
       </div>
     </section>
 
-    <section class="section contact-section" id="contact">
+    <section class="section contact-section reveal-section" id="contact">
       <div class="section-heading">
         <span class="section-kicker">Contact</span>
         <h2>Let’s build something.</h2>
@@ -462,10 +514,36 @@
 
       <div class="panel contact-card">
         <div class="contact-grid">
-          <a href="mailto:bhurgrimustafa203@gmail.com">bhurgrimustafa203@gmail.com</a>
-          <a href="tel:+923194764775">+92 319 476 4775</a>
-          <a href="https://github.com/ahmedmustafa28" target="_blank" rel="noreferrer">github.com/ahmedmustafa28</a>
-          <a href="https://linkedin.com/in/ahmed-mustafa-baa587290" target="_blank" rel="noreferrer">linkedin.com/in/ahmed-mustafa-baa587290</a>
+          <a href="mailto:bhurgrimustafa203@gmail.com">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+            bhurgrimustafa203@gmail.com
+          </a>
+          <a href="tel:+923194764775">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+            </svg>
+            +92 319 476 4775
+          </a>
+          <a href="https://wa.me/923194764775" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23-1.54 0-3.05-.43-4.36-1.24l-.31-.18-3.24.85.86-3.16-.2-.32a8.19 8.19 0 0 1-1.25-4.38c0-4.54 3.7-8.24 8.24-8.24zm-3.11 3.52c-.18 0-.37.06-.52.21-.31.3-.65.7-.65 1.39 0 .81.4 1.66.86 2.29.75 1.02 1.82 1.82 2.84 2.57.63.46 1.48.86 2.29.86.69 0 1.09-.34 1.39-.65.15-.15.21-.34.21-.52v-.29c0-.17-.12-.32-.28-.38l-1.3-.59c-.14-.06-.32-.03-.42.09l-.51.63c-.08.1-.22.14-.35.06-.45-.23-.85-.52-1.2-.87-.35-.35-.64-.75-.87-1.2-.08-.13-.04-.26.06-.35l.63-.51c.12-.1.15-.28.09-.42l-.59-1.3c-.06-.16-.21-.28-.38-.28h-.29z"/>
+            </svg>
+            wa.me/923194764775
+          </a>
+          <a href="https://github.com/ahmedmustafa28" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/>
+            </svg>
+            github.com/ahmedmustafa28
+          </a>
+          <a href="https://linkedin.com/in/ahmed-mustafa-baa587290" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+            </svg>
+            linkedin.com/in/ahmed-mustafa-baa587290
+          </a>
           <span>Hyderabad, Sindh, Pakistan</span>
         </div>
       </div>
@@ -475,6 +553,14 @@
   <footer class="site-footer">
     <p>© 2026 Ahmed Mustafa. Built with HTML, CSS, and vanilla JavaScript.</p>
   </footer>
+
+  <div id="cert-modal" class="modal" aria-hidden="true" role="dialog">
+    <div class="modal-overlay"></div>
+    <div class="modal-container">
+      <button class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-content"></div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
