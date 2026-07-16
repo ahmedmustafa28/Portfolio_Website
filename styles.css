@@ -633,7 +633,6 @@ html[data-theme="light"] .theme-icon-moon {
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  filter: grayscale(100%) contrast(1.1);
 }
 
 .hero-portrait::before {
