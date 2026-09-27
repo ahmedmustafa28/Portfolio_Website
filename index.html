@@ -17,6 +17,40 @@
   <meta name="twitter:description" content="Ahmed Mustafa portfolio website for software engineering and AI engineering projects." />
   <meta name="twitter:image" content="assets/og-preview.png" />
   <title>Ahmed Mustafa | Software & AI Engineering Portfolio</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://ahmedmustafa28.github.io/#person",
+        "name": "Ahmed Mustafa",
+        "url": "https://ahmedmustafa28.github.io",
+        "image": "https://ahmedmustafa28.github.io/assets/og-preview.png",
+        "jobTitle": "Software Engineer & AI Developer",
+        "description": "Software Engineering student at MUET building data and AI systems from collection to deployment.",
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Mehran University of Engineering and Technology"
+        },
+        "sameAs": [
+          "https://github.com/ahmedmustafa28",
+          "https://linkedin.com/in/ahmed-mustafa-baa587290"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://ahmedmustafa28.github.io/#website",
+        "url": "https://ahmedmustafa28.github.io",
+        "name": "Ahmed Mustafa | Software & AI Engineering Portfolio",
+        "description": "Portfolio website for Ahmed Mustafa showcasing software engineering and AI projects.",
+        "author": {
+          "@id": "https://ahmedmustafa28.github.io/#person"
+        }
+      }
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
@@ -191,6 +225,27 @@
             <span class="badge badge-live">[LIVE]</span>
           </div>
           <p>4-module analytics platform covering medal tallies, country and athlete performance across 120+ years of Olympic data, built on 271,116+ athlete records.</p>
+          <details class="tech-details">
+            <summary class="tech-details-summary">
+              <span>Technical Architecture &amp; Decisions</span>
+              <svg class="tech-details-arrow" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+            </summary>
+            <div class="tech-details-content">
+              <div class="tech-flow">
+                <span class="tech-flow-step">Raw Olympic Records (CSV)</span>
+                <span class="tech-flow-arrow">↓</span>
+                <span class="tech-flow-step">Pandas Clean &amp; NOC Region Merge</span>
+                <span class="tech-flow-arrow">↓</span>
+                <span class="tech-flow-step">Team Medal Deduplication Logic</span>
+                <span class="tech-flow-arrow">↓</span>
+                <span class="tech-flow-step">Plotly &amp; Seaborn Visualizations</span>
+              </div>
+              <ul class="tech-notes">
+                <li><strong>Problem &amp; Decision:</strong> Team events (e.g. hockey, football) list multiple medal-winning athletes for a single event. Aggregating raw rows directly inflates national tallies; solved by deduplicating subsets on <code>(Games, Year, Sport, Event, Medal, NOC)</code> for country standings while preserving athlete-level metrics.</li>
+                <li><strong>Engineering Trade-off:</strong> In-memory DataFrame transformations on Streamlit Cloud avoid external database dependencies and latency, but operate within container memory constraints on 270K+ rows.</li>
+              </ul>
+            </div>
+          </details>
           <div class="tag-list" aria-label="Tech stack">
             <span class="tag">Python</span>
             <span class="tag">Pandas</span>
@@ -217,6 +272,59 @@
             <span class="badge badge-live">[LIVE]</span>
           </div>
           <p>NLP-powered web app turning raw WhatsApp exports into 7+ analytical insights — activity timelines, emoji analysis, word clouds, and behavioral breakdowns, with a custom Hinglish stop-word filter.</p>
+          <details class="tech-details">
+            <summary class="tech-details-summary">
+              <span>Technical Architecture &amp; Decisions</span>
+              <svg class="tech-details-arrow" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+            </summary>
+            <div class="tech-details-content">
+              <div class="tech-flow">
+                <span class="tech-flow-step">Raw Chat Export (.txt)</span>
+                <span class="tech-flow-arrow">↓</span>
+                <span class="tech-flow-step">Regex Pattern Parsing (Time &amp; Author)</span>
+                <span class="tech-flow-arrow">↓</span>
+                <span class="tech-flow-step">Temporal Feature &amp; Stop-Word Pipeline</span>
+                <span class="tech-flow-arrow">↓</span>
+                <span class="tech-flow-step">Timeline, WordCloud &amp; Emoji Metrics</span>
+              </div>
+              <ul class="tech-notes">
+                <li><strong>Problem &amp; Decision:</strong> Chat exports differ across Android/iOS devices between 12-hour AM/PM and 24-hour timestamp patterns. Built resilient regex matching to parse timestamps and split authors from messages, while filtering out system messages and media omitted tags.</li>
+                <li><strong>Engineering Trade-off:</strong> Stateless, in-session file processing protects user privacy by never persisting personal messages to disk, requiring re-upload on session reset.</li>
+              </ul>
+            </div>
+          </details>
+          <div class="nlp-simulator">
+            <div class="sim-header">
+              <span>NLP LEXICAL &amp; SENTIMENT ENGINE</span>
+              <span class="sim-badge">PORTFOLIO DEMO</span>
+            </div>
+            <div class="sim-body">
+              <div class="sim-quick-chips" aria-label="Demo presets">
+                <button type="button" class="sim-chip" data-sample="Great work! Deployed the machine learning pipeline successfully.">Positive</button>
+                <button type="button" class="sim-chip" data-sample="Critical pipeline bug detected; feature extraction failed.">Negative</button>
+                <button type="button" class="sim-chip" data-sample="Updated the documentation and pushed the repository commit.">Neutral</button>
+              </div>
+              <input type="text" class="sim-input nlp-input" placeholder="Type text or click a sample..." aria-label="Enter text for NLP analysis">
+              <div class="sim-buttons">
+                <button type="button" class="sim-btn nlp-analyze-btn">Analyze Text</button>
+                <button type="button" class="sim-btn nlp-clear-btn">Clear</button>
+              </div>
+              <div class="nlp-output-box">
+                <div class="nlp-stats">
+                  <span>Tokens: <strong class="nlp-stat-tokens">0</strong></span>
+                  <span>Filtered: <strong class="nlp-stat-filtered">0</strong></span>
+                  <span>Polarity: <strong class="nlp-stat-polarity">--</strong></span>
+                </div>
+                <div class="nlp-result-words" aria-live="polite">
+                  <span class="sim-label">Token Stream &amp; Sentiment Weights:</span>
+                  <div class="nlp-tokens-container">
+                    <span class="nlp-token-placeholder">Enter text above to inspect client-side tokenization and sentiment scoring.</span>
+                  </div>
+                </div>
+              </div>
+              <p class="sim-disclaimer">Portfolio Demonstration: Client-side tokenization, stop-word reduction &amp; lexicon sentiment analysis running 100% in-browser.</p>
+            </div>
+          </div>
           <div class="tag-list" aria-label="Tech stack">
             <span class="tag">Python</span>
             <span class="tag">Streamlit</span>

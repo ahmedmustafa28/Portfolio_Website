@@ -789,6 +789,134 @@ function initCopyEmail() {
   });
 }
 
+/* --- Interactive NLP Lexical & Sentiment Engine Demo --- */
+function initNlpDemo() {
+  const container = document.querySelector('.nlp-simulator');
+  if (!container) return;
+
+  const input = container.querySelector('.nlp-input');
+  const analyzeBtn = container.querySelector('.nlp-analyze-btn');
+  const clearBtn = container.querySelector('.nlp-clear-btn');
+  const statTokens = container.querySelector('.nlp-stat-tokens');
+  const statFiltered = container.querySelector('.nlp-stat-filtered');
+  const statPolarity = container.querySelector('.nlp-stat-polarity');
+  const tokensContainer = container.querySelector('.nlp-tokens-container');
+  const chips = container.querySelectorAll('.sim-chip');
+
+  const lexicon = {
+    great: 3, excellent: 3, amazing: 3, love: 3, best: 3, brilliant: 3, perfect: 3,
+    good: 2, successfully: 2, success: 2, win: 2, progress: 2, optimized: 2, secure: 2,
+    fast: 1, clean: 1, working: 1, deployed: 1, safe: 1, helpful: 1, solid: 1,
+    bug: -2, critical: -2, error: -2, failed: -2, fail: -2, broken: -2, poor: -2, bad: -2,
+    defect: -2, risk: -2, issue: -1, slow: -1, warning: -1, dropped: -1,
+    crash: -3, crashed: -3, terrible: -3, worst: -3, vulnerability: -3
+  };
+
+  const stopWords = new Set([
+    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with',
+    'is', 'was', 'were', 'be', 'been', 'being', 'it', 'this', 'that', 'these', 'those',
+    'i', 'you', 'he', 'she', 'we', 'they', 'my', 'your', 'our', 'their', 'by', 'as', 'from',
+    'kya', 'hai', 'tha', 'thi', 'aur', 'ya', 'bhi', 'hum', 'tum'
+  ]);
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, (m) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[m]));
+  }
+
+  function resetOutputs() {
+    if (statTokens) statTokens.textContent = '0';
+    if (statFiltered) statFiltered.textContent = '0';
+    if (statPolarity) {
+      statPolarity.textContent = '--';
+      statPolarity.style.color = '';
+    }
+    if (tokensContainer) {
+      tokensContainer.innerHTML = '<span class="nlp-token-placeholder">Enter text above to inspect client-side tokenization and sentiment scoring.</span>';
+    }
+  }
+
+  function runAnalysis() {
+    const rawText = input.value.trim();
+    if (!rawText) {
+      resetOutputs();
+      return;
+    }
+
+    const words = rawText.toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(Boolean);
+    let score = 0;
+    let filteredCount = 0;
+    const renderedTokens = [];
+
+    for (const w of words) {
+      if (stopWords.has(w)) {
+        filteredCount++;
+        renderedTokens.push(`<span class="nlp-token-pill nlp-token-stop" title="Stop-word removed">${escapeHtml(w)}</span>`);
+      } else if (Object.prototype.hasOwnProperty.call(lexicon, w)) {
+        const val = lexicon[w];
+        score += val;
+        const cls = val > 0 ? 'nlp-token-pos' : 'nlp-token-neg';
+        const sign = val > 0 ? `+${val}` : `${val}`;
+        renderedTokens.push(`<span class="nlp-token-pill ${cls}" title="Polarity weight: ${sign}">${escapeHtml(w)} (${sign})</span>`);
+      } else {
+        renderedTokens.push(`<span class="nlp-token-pill nlp-token-content">${escapeHtml(w)}</span>`);
+      }
+    }
+
+    if (statTokens) statTokens.textContent = String(words.length);
+    if (statFiltered) statFiltered.textContent = String(filteredCount);
+
+    if (statPolarity) {
+      if (score > 0) {
+        statPolarity.textContent = `Positive (+${score})`;
+        statPolarity.style.color = '#10b981';
+      } else if (score < 0) {
+        statPolarity.textContent = `Negative (${score})`;
+        statPolarity.style.color = '#ef4444';
+      } else {
+        statPolarity.textContent = 'Neutral (0)';
+        statPolarity.style.color = 'var(--text-secondary)';
+      }
+    }
+
+    if (tokensContainer) {
+      tokensContainer.innerHTML = renderedTokens.join('');
+    }
+  }
+
+  if (analyzeBtn) analyzeBtn.addEventListener('click', runAnalysis);
+
+  if (input) {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        runAnalysis();
+      }
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      resetOutputs();
+      input.focus();
+    });
+  }
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const sample = chip.getAttribute('data-sample') || '';
+      input.value = sample;
+      runAnalysis();
+    });
+  });
+}
+
 // Start interactive features
 initHeroCanvas();
 initCardGlows();
@@ -797,4 +925,6 @@ initProjectFilters();
 initCryptoSimulator();
 initCertLightbox();
 initCopyEmail();
+initNlpDemo();
+
 
