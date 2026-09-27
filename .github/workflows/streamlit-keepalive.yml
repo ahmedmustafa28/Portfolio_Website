@@ -1,0 +1,78 @@
+name: Check Streamlit Demos Availability
+
+on:
+  schedule:
+    # Run at 12:00 UTC every 3 days to maintain warm container state reasonably
+    - cron: '0 12 */3 * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  check-demos:
+    name: Health Check Live Applications
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Olympics Data Analysis App
+        id: ping_olympics
+        continue-on-error: true
+        env:
+          SECRET_URL: ${{ secrets.STREAMLIT_OLYMPICS_URL }}
+        run: |
+          TARGET_URL="${SECRET_URL:-https://olympics-data-analysis-ml.streamlit.app/}"
+          echo "::add-mask::$TARGET_URL"
+          echo "Checking Olympics Data Analysis application..."
+
+          HTTP_STATUS=$(curl -sSL -w "%{http_code}" \
+            -o /dev/null \
+            --max-time 30 \
+            -c /tmp/cookies_olympics.txt \
+            -b /tmp/cookies_olympics.txt \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            "$TARGET_URL" || echo "FAILED")
+
+          rm -f /tmp/cookies_olympics.txt
+          echo "Olympics App HTTP Status: $HTTP_STATUS"
+
+          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "303" ]; then
+            echo "Olympics App is responsive."
+            echo "olympics_status=success" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Olympics App check returned status: $HTTP_STATUS"
+            echo "olympics_status=failure" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Ping WhatsApp Chat Analyzer App
+        id: ping_whatsapp
+        continue-on-error: true
+        env:
+          SECRET_URL: ${{ secrets.STREAMLIT_WHATSAPP_URL }}
+        run: |
+          TARGET_URL="${SECRET_URL:-https://whatsapp-chat-analyzer.streamlit.app/}"
+          echo "::add-mask::$TARGET_URL"
+          echo "Checking WhatsApp Chat Analyzer application..."
+
+          HTTP_STATUS=$(curl -sSL -w "%{http_code}" \
+            -o /dev/null \
+            --max-time 30 \
+            -c /tmp/cookies_whatsapp.txt \
+            -b /tmp/cookies_whatsapp.txt \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            "$TARGET_URL" || echo "FAILED")
+
+          rm -f /tmp/cookies_whatsapp.txt
+          echo "WhatsApp App HTTP Status: $HTTP_STATUS"
+
+          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "303" ]; then
+            echo "WhatsApp App is responsive."
+            echo "whatsapp_status=success" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::WhatsApp App check returned status: $HTTP_STATUS"
+            echo "whatsapp_status=failure" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Summarize Results
+        run: |
+          echo "### Application Availability Check Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Application | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| :--- | :--- |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Olympics Data Analysis | ${{ steps.ping_olympics.outputs.olympics_status == 'success' && '✅ Online' || '⚠️ Needs Attention / Sleeping' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| WhatsApp Chat Analyzer | ${{ steps.ping_whatsapp.outputs.whatsapp_status == 'success' && '✅ Online' || '⚠️ Needs Attention / Sleeping' }} |" >> "$GITHUB_STEP_SUMMARY"

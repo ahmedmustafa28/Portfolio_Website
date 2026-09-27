@@ -161,7 +161,7 @@
             </article>
             <article class="stat-card">
               <span class="stat-value">94.28%</span>
-              <span class="stat-label">Model Accuracy Achieved</span>
+              <span class="stat-label">Peak Model Metric</span>
             </article>
           </div>
         </div>
@@ -200,7 +200,7 @@
             <span class="tag">Matplotlib</span>
           </div>
           <div class="project-actions">
-            <a class="demo-link" href="https://olympics-data-analysis-ml.streamlit.app/" target="_blank" rel="noreferrer">Live Demo</a>
+            <a class="demo-link" href="https://olympics-data-analysis-ml.streamlit.app/" target="_blank" rel="noreferrer"><span class="live-pulse" aria-hidden="true"></span>Live Demo</a>
             <a class="github-link" href="https://github.com/ahmedmustafa28/Olympics-Data-Analysis" target="_blank" rel="noreferrer" aria-label="Open Olympics Data Analysis Web App on GitHub">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
               GitHub
@@ -208,7 +208,7 @@
           </div>
         </article>
 
-        <article class="panel project-card">
+        <article class="panel project-card" data-category="web-app ml-ds">
           <div class="project-preview">
             <img src="assets/projects/whatsapp-analyzer.png" alt="Screenshot preview of the WhatsApp Chat Analyzer" loading="lazy" />
           </div>
@@ -226,7 +226,7 @@
             <span class="tag">Matplotlib</span>
           </div>
           <div class="project-actions">
-            <a class="demo-link" href="https://whatsapp-chat-analyzer.streamlit.app/" target="_blank" rel="noreferrer">Live Demo</a>
+            <a class="demo-link" href="https://whatsapp-chat-analyzer.streamlit.app/" target="_blank" rel="noreferrer"><span class="live-pulse" aria-hidden="true"></span>Live Demo</a>
             <a class="github-link" href="https://github.com/ahmedmustafa28/WhatsApp-Chat-Analyzer" target="_blank" rel="noreferrer" aria-label="Open WhatsApp Chat Analyzer on GitHub">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.48v-1.69c-2.78.62-3.37-1.18-3.37-1.18-.46-1.2-1.12-1.52-1.12-1.52-.92-.65.07-.63.07-.63 1.02.07 1.56 1.08 1.56 1.08.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.21-.26-4.53-1.13-4.53-5.01 0-1.11.38-2.02 1-2.73-.1-.26-.43-1.29.1-2.69 0 0 .82-.27 2.7 1.04a9.02 9.02 0 0 1 4.92 0c1.88-1.31 2.7-1.04 2.7-1.04.53 1.4.2 2.43.1 2.69.62.71 1 1.62 1 2.73 0 3.89-2.33 4.74-4.55 4.99.36.32.69.97.69 1.96v2.91c0 .26.18.58.69.48A10.13 10.13 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
               GitHub
@@ -242,7 +242,7 @@
             <h3>Credit Card Fraud Detection</h3>
             <span class="badge badge-complete">[COMPLETE]</span>
           </div>
-          <p>Fraud detection model on 284,807 highly imbalanced transactions (0.17% fraud rate); applied strategic under-sampling and achieved 93.40% test accuracy.</p>
+          <p>End-to-end fraud detection pipeline on 284,807 highly imbalanced transactions (0.17% fraud rate). Optimized for Precision-Recall (PR-AUC) and cost-sensitive evaluation rather than raw accuracy, achieving 93.40% balanced recall with controlled false positives.</p>
           <div class="tag-list" aria-label="Tech stack">
             <span class="tag">Python</span>
             <span class="tag">scikit-learn</span>
@@ -292,7 +292,7 @@
           <p>Desktop security app with AES-based encryption, automatic key management, and SHA-256 file integrity verification.</p>
           <div class="crypto-simulator">
             <div class="sim-header">
-              <span>AES-256 SIMULATOR</span>
+              <span>AES-256-GCM CLIENT ENGINE</span>
               <span class="sim-status">READY</span>
             </div>
             <div class="sim-body">
@@ -302,7 +302,7 @@
                 <button type="button" class="sim-btn decrypt-btn" disabled>Decrypt</button>
               </div>
               <div class="sim-output-box">
-                <span class="sim-label">Ciphertext:</span>
+                <span class="sim-label">Ciphertext (Base64 IV + Tag + Data):</span>
                 <code class="sim-output">--</code>
               </div>
             </div>
@@ -399,7 +399,14 @@
               </div>
               <span class="badge badge-live">[Current]</span>
             </div>
-            <p>Building and shipping applied AI solutions, working across the ML development lifecycle from experimentation to deployment.</p>
+            <p>Designing and implementing applied AI pipelines and machine learning systems. Handling data preprocessing, feature engineering, model benchmarking, and deployment workflows for automated decision systems.</p>
+            <div class="tag-list" aria-label="Technologies used">
+              <span class="tag">Python</span>
+              <span class="tag">NLP</span>
+              <span class="tag">ML Lifecycle</span>
+              <span class="tag">Data Pipelines</span>
+              <span class="tag">Model Benchmarking</span>
+            </div>
           </div>
         </article>
 
@@ -413,7 +420,12 @@
               </div>
               <span class="badge badge-live">[Current]</span>
             </div>
-            <p>Leading visual content strategy for a 50+ member university chapter, coordinating 3 cross-functional sub-teams across 10+ events, and reducing revision cycles by 30% through a structured creative review process.</p>
+            <p>Leading visual content strategy for a 50+ member chapter, directing 3 cross-functional creative sub-teams across 10+ tech events, and reducing revision turnaround cycles by 30% through standardized review protocols.</p>
+            <div class="tag-list" aria-label="Key competencies">
+              <span class="tag">Team Leadership</span>
+              <span class="tag">Visual Strategy</span>
+              <span class="tag">Process Optimization</span>
+            </div>
           </div>
         </article>
 
@@ -427,7 +439,11 @@
               </div>
               <span class="badge badge-live">[Current]</span>
             </div>
-            <p>Representing Devsinc on campus, connecting students with developer community events, opportunities, and resources.</p>
+            <p>Bridging university engineering students with developer community workshops, hackathons, and enterprise software engineering career tracks.</p>
+            <div class="tag-list" aria-label="Key focus">
+              <span class="tag">Developer Advocacy</span>
+              <span class="tag">Tech Community</span>
+            </div>
           </div>
         </article>
 
@@ -441,7 +457,7 @@
               </div>
               <span class="badge badge-live">[Current]</span>
             </div>
-            <p>Actively contributing to a regional tech community focused on growing the local developer ecosystem.</p>
+            <p>Supporting local tech conferences and student developer meetups to foster open-source collaboration in the regional ecosystem.</p>
           </div>
         </article>
 
@@ -514,12 +530,18 @@
 
       <div class="panel contact-card">
         <div class="contact-grid">
-          <a href="mailto:bhurgrimustafa203@gmail.com">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-            </svg>
-            bhurgrimustafa203@gmail.com
-          </a>
+          <div class="contact-email-wrap">
+            <a href="mailto:bhurgrimustafa203@gmail.com" class="contact-email-link">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+              bhurgrimustafa203@gmail.com
+            </a>
+            <button class="copy-email-btn" type="button" aria-label="Copy email address" data-email="bhurgrimustafa203@gmail.com">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              <span class="copy-text">Copy</span>
+            </button>
+          </div>
           <a href="tel:+923194764775">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
@@ -554,10 +576,19 @@
     <p>© 2026 Ahmed Mustafa. Built with HTML, CSS, and vanilla JavaScript.</p>
   </footer>
 
-  <div id="cert-modal" class="modal" aria-hidden="true" role="dialog">
+  <div id="cert-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Certificate Viewer">
     <div class="modal-overlay"></div>
     <div class="modal-container">
-      <button class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-header">
+        <span class="modal-title">Certificate Document</span>
+        <div class="modal-header-actions">
+          <a class="modal-external-link" href="#" target="_blank" rel="noreferrer" title="Open PDF in new tab">
+            <span>Open in Tab</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zm-2 16H5V7h7V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v-2z"/></svg>
+          </a>
+          <button class="modal-close" aria-label="Close modal">&times;</button>
+        </div>
+      </div>
       <div class="modal-content"></div>
     </div>
   </div>

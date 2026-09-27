@@ -510,7 +510,8 @@ function initProjectFilters() {
       const category = btn.getAttribute('data-filter');
 
       projects.forEach(project => {
-        const categories = project.getAttribute('data-category').split(' ');
+        const rawCategories = project.getAttribute('data-category') || '';
+        const categories = rawCategories.trim().split(/\s+/).filter(Boolean);
         if (category === 'all' || categories.includes(category)) {
           project.style.display = '';
           setTimeout(() => {
@@ -527,7 +528,7 @@ function initProjectFilters() {
   });
 }
 
-/* --- Interactive Encryption Simulator --- */
+/* --- Interactive Encryption Simulator (AES-256-GCM via Web Crypto API) --- */
 function initCryptoSimulator() {
   const simulator = document.querySelector('.crypto-simulator');
   if (!simulator) return;
@@ -539,61 +540,127 @@ function initCryptoSimulator() {
   const status = simulator.querySelector('.sim-status');
 
   let currentCiphertext = '';
+  const AES_KEY_STRING = 'infosec_portfolio_aes_256_key_32'; // 32 bytes for AES-256
 
-  function mockEncrypt(text) {
-    if (!text) return '';
-    const b64 = btoa(unescape(encodeURIComponent(text)));
-    return 'AES256_' + b64.replace(/[a-zA-Z]/g, (c) => {
-      return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
-    });
+  function bufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
   }
 
-  function mockDecrypt(ciphertext) {
-    if (!ciphertext || !ciphertext.startsWith('AES256_')) return '';
-    const rot = ciphertext.substring(7);
-    const b64 = rot.replace(/[a-zA-Z]/g, (c) => {
-      return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
-    });
-    try {
-      return decodeURIComponent(escape(atob(b64)));
-    } catch (e) {
-      return '[Decryption Error: Invalid Padding]';
+  function base64ToBuffer(b64) {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
+  async function encryptAESGCM(text) {
+    if (window.crypto && window.crypto.subtle) {
+      const enc = new TextEncoder();
+      const rawKey = enc.encode(AES_KEY_STRING);
+      const cryptoKey = await window.crypto.subtle.importKey(
+        'raw',
+        rawKey,
+        { name: 'AES-GCM' },
+        false,
+        ['encrypt', 'decrypt']
+      );
+      const iv = window.crypto.getRandomValues(new Uint8Array(12));
+      const encrypted = await window.crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv },
+        cryptoKey,
+        enc.encode(text)
+      );
+      const packed = new Uint8Array(12 + encrypted.byteLength);
+      packed.set(iv, 0);
+      packed.set(new Uint8Array(encrypted), 12);
+      return 'AES-GCM-256:' + bufferToBase64(packed.buffer);
+    } else {
+      const b64 = btoa(unescape(encodeURIComponent(text)));
+      return 'AES-GCM-256:' + b64;
     }
   }
 
-  encryptBtn.addEventListener('click', () => {
+  async function decryptAESGCM(cipherString) {
+    if (!cipherString.startsWith('AES-GCM-256:')) {
+      throw new Error('Invalid ciphertext format');
+    }
+    const b64 = cipherString.replace('AES-GCM-256:', '');
+    if (window.crypto && window.crypto.subtle) {
+      const packedBuffer = base64ToBuffer(b64);
+      const packedBytes = new Uint8Array(packedBuffer);
+      if (packedBytes.length < 13) throw new Error('Data payload too short');
+      const iv = packedBytes.slice(0, 12);
+      const cipherData = packedBytes.slice(12);
+
+      const enc = new TextEncoder();
+      const rawKey = enc.encode(AES_KEY_STRING);
+      const cryptoKey = await window.crypto.subtle.importKey(
+        'raw',
+        rawKey,
+        { name: 'AES-GCM' },
+        false,
+        ['encrypt', 'decrypt']
+      );
+      const decrypted = await window.crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        cryptoKey,
+        cipherData
+      );
+      return new TextDecoder().decode(decrypted);
+    } else {
+      return decodeURIComponent(escape(atob(b64)));
+    }
+  }
+
+  encryptBtn.addEventListener('click', async () => {
     const text = input.value.trim();
     if (!text) return;
 
     status.textContent = 'ENCRYPTING...';
-    status.style.color = '#ff7a1a';
+    status.style.color = 'var(--accent)';
     encryptBtn.disabled = true;
 
-    window.setTimeout(() => {
-      currentCiphertext = mockEncrypt(text);
+    try {
+      currentCiphertext = await encryptAESGCM(text);
       output.textContent = currentCiphertext;
       status.textContent = 'ENCRYPTED';
       status.style.color = '#10b981';
       encryptBtn.disabled = false;
       decryptBtn.disabled = false;
-    }, 450);
+    } catch (err) {
+      status.textContent = 'ENCRYPTION ERROR';
+      status.style.color = '#ef4444';
+      encryptBtn.disabled = false;
+    }
   });
 
-  decryptBtn.addEventListener('click', () => {
+  decryptBtn.addEventListener('click', async () => {
     if (!currentCiphertext) return;
 
     status.textContent = 'DECRYPTING...';
-    status.style.color = '#ff7a1a';
+    status.style.color = 'var(--accent)';
     decryptBtn.disabled = true;
 
-    window.setTimeout(() => {
-      const originalText = mockDecrypt(currentCiphertext);
+    try {
+      const originalText = await decryptAESGCM(currentCiphertext);
       output.textContent = originalText;
       status.textContent = 'DECRYPTED';
       status.style.color = '#10b981';
       decryptBtn.disabled = true;
       currentCiphertext = '';
-    }, 450);
+    } catch (err) {
+      output.textContent = '[Decryption failed: integrity check or tag mismatch]';
+      status.textContent = 'AUTH TAG FAILED';
+      status.style.color = '#ef4444';
+      decryptBtn.disabled = true;
+    }
   });
 
   input.addEventListener('input', () => {
@@ -614,22 +681,43 @@ function initCertLightbox() {
   const modalClose = modal.querySelector('.modal-close');
   const modalOverlay = modal.querySelector('.modal-overlay');
   const modalContent = modal.querySelector('.modal-content');
+  const modalTitle = modal.querySelector('.modal-title');
+  const modalExternalLink = modal.querySelector('.modal-external-link');
   const certLinks = document.querySelectorAll('.certificate-link');
 
-  function openModal(href) {
+  function openModal(href, title) {
     modalContent.innerHTML = '';
-    let element;
-
-    if (href.endsWith('.pdf')) {
-      element = document.createElement('iframe');
-      element.src = href;
-    } else {
-      element = document.createElement('img');
-      element.src = href;
-      element.alt = 'Certificate';
+    if (modalTitle && title) {
+      modalTitle.textContent = title;
+    }
+    if (modalExternalLink) {
+      modalExternalLink.href = href;
     }
 
-    modalContent.appendChild(element);
+    const isMobile = window.innerWidth < 768;
+
+    if (href.endsWith('.pdf')) {
+      if (isMobile) {
+        const fallback = document.createElement('div');
+        fallback.className = 'modal-mobile-fallback';
+        fallback.innerHTML = `
+          <p>Certificate document ready. Mobile browsers view PDFs best in a dedicated tab.</p>
+          <a href="${href}" target="_blank" rel="noreferrer" class="button button-primary">Open Full Certificate ↗</a>
+        `;
+        modalContent.appendChild(fallback);
+      } else {
+        const iframe = document.createElement('iframe');
+        iframe.src = href;
+        iframe.title = title || 'Certificate Preview';
+        modalContent.appendChild(iframe);
+      }
+    } else {
+      const img = document.createElement('img');
+      img.src = href;
+      img.alt = title || 'Certificate Preview';
+      modalContent.appendChild(img);
+    }
+
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -647,19 +735,56 @@ function initCertLightbox() {
   certLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
+      const card = link.closest('.certificate-card');
+      const title = card ? card.querySelector('h3')?.textContent : 'Certificate Document';
+
       if (href && (href.endsWith('.pdf') || href.endsWith('.png') || href.endsWith('.jpg') || href.endsWith('.jpeg'))) {
         e.preventDefault();
-        openModal(href);
+        openModal(href, title);
       }
     });
   });
 
-  modalClose.addEventListener('click', closeModal);
-  modalOverlay.addEventListener('click', closeModal);
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.classList.contains('active')) {
       closeModal();
+    }
+  });
+}
+
+/* --- Copy Email to Clipboard with Visual Feedback --- */
+function initCopyEmail() {
+  const copyBtn = document.querySelector('.copy-email-btn');
+  if (!copyBtn) return;
+
+  const email = copyBtn.getAttribute('data-email') || 'bhurgrimustafa203@gmail.com';
+  const copyText = copyBtn.querySelector('.copy-text');
+
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      copyBtn.classList.add('copied');
+      if (copyText) copyText.textContent = 'Copied! ✓';
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        if (copyText) copyText.textContent = 'Copy';
+      }, 2200);
+    } catch (e) {
+      const textArea = document.createElement('textarea');
+      textArea.value = email;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      copyBtn.classList.add('copied');
+      if (copyText) copyText.textContent = 'Copied! ✓';
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        if (copyText) copyText.textContent = 'Copy';
+      }, 2200);
     }
   });
 }
@@ -671,3 +796,5 @@ initScrollReveals();
 initProjectFilters();
 initCryptoSimulator();
 initCertLightbox();
+initCopyEmail();
+
