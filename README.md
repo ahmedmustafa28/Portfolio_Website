@@ -1,85 +1,53 @@
 # Ahmed Mustafa Portfolio
 
-A single-page, responsive portfolio website for a software engineering and AI engineering student.
+Personal portfolio of Ahmed Mustafa, a Software Engineering undergraduate at Mehran University of Engineering & Technology (MUET), Hyderabad. Live at https://ahmedmustafa28.github.io/Portfolio_Website/.
 
-## Overview
+The site is a single static page with no framework and no build step. GitHub Pages serves the repository root directly.
 
-This portfolio highlights Ahmed Mustafa's background, selected projects, skills, leadership experience, and certifications. It is built with plain HTML, CSS, and vanilla JavaScript, with a dark editorial layout and a minimal motion system.
+## What is on the page
 
-## Features
+- **Hero and About**: summary, education, languages, and three stats (projects shown, apps live, Olympic records analysed).
+- **Projects**: the five projects from the resume, in resume order. Each card has a screenshot of the real application running, the resume bullets, verified metrics, a collapsible "Technical Architecture & Decisions" note written from the code, and GitHub / Live Demo links where they exist. Two smaller projects are listed under "Other work".
+- **Skills**: the resume's Technical Skills groups.
+- **Experience**: Professional Experience and Leadership & Activities, with the resume's dates and bullets.
+- **Certifications**: four certificates with PDF viewer.
+- **Contact**: email, phone, LinkedIn, GitHub, location.
 
-- Responsive single-page layout
-- Editorial-style hero with grayscale portrait treatment
-- Animated subtle background accent in the hero
-- About section with stats and portrait crop
-- Projects section with live and completed work
-- Skills grouped by category
-- Leadership and certifications sections
-- Contact section with email, phone, GitHub, and LinkedIn links
-- Accessible focus states and reduced-motion support
+## Content rules
 
-## Tech Stack
+- Roles, dates, project names, skills, certifications and contact details match the resume (`assets/resume.pdf`).
+- Every number on the page can be traced to a file in the project repository it describes (for example `spam-email-detector/models/model_metadata.json`, or the output of `house-price-prediction/train.py`).
+- Project images are screenshots of the real apps captured with a headless browser at 1440×900 and exported as WebP. The WhatsApp Chat Analyzer screenshots use a synthetic chat with invented names.
 
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- Google Fonts: Inter, Space Grotesk, JetBrains Mono
-
-## Project Structure
+## Project structure
 
 ```text
-Portfolio 2/
-├── assets/
-│   ├── profile.jpg
-│   ├── resume.pdf
-│   └── certificates/
-│       ├── navttc-python.pdf
-│       ├── datacamp-numpy.pdf
-│       ├── nftp-web-dev.pdf
-│       └── coursera-prompt-engineering.pdf
-├── Certificates/
-│   └── source certificate images
-├── images/
-│   └── photo.jpg, Profile.png
+.
 ├── index.html
 ├── styles.css
 ├── script.js
-└── README.md
+├── README.md
+├── .github/workflows/streamlit-keepalive.yml   # pings the live Streamlit apps
+└── assets/
+    ├── favicon.ico
+    ├── og-preview.png          # 1200×630 link preview
+    ├── profile.webp            # hero photo
+    ├── profile.jpg             # source photo
+    ├── resume.pdf
+    ├── certificates/*.pdf
+    └── projects/*.webp         # app screenshots
 ```
 
-## Local Development
+## Local development
 
-A lightweight static server is already enough for this project.
+Serve the folder with any static server, for example:
 
 ```bash
 python -m http.server 8000
 ```
 
-Then open:
+Then open http://localhost:8000/.
 
-```text
-http://127.0.0.1:8000/
-```
+## Tech stack
 
-## Content Included
-
-- Hero section with a large portrait and CTA buttons
-- About section with summary and key metrics
-- Projects section with five portfolio projects
-- Skills section with grouped technical tags
-- Leadership section
-- Certifications section with four certificates
-- Contact section with direct links
-
-## Notes
-
-- The site is intentionally framework-free.
-- Certificate PDFs are generated in `assets/certificates/` for direct linking.
-- The resume is available at `assets/resume.pdf`.
-
-## Author
-
-Ahmed Mustafa
-
-GitHub: https://github.com/ahmedmustafa28
-LinkedIn: https://linkedin.com/in/ahmed-mustafa-baa587290
+HTML5, CSS3, vanilla JavaScript, Google Fonts (Inter, Space Grotesk, JetBrains Mono). Features: dark/light theme toggle, mobile menu, skip link and focus states, reduced-motion support, scroll reveals, project filters, and a lightbox for certificates and screenshots.
