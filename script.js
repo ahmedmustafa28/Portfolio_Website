@@ -18,6 +18,8 @@ let menuOpen = false;
 let currentTheme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
 let loaderFrameId = 0;
 
+let heroThreeApp = null;
+
 function getNextTheme(theme) {
   return theme === 'light' ? 'dark' : 'light';
 }
@@ -31,6 +33,10 @@ function setTheme(theme, persist = true) {
     const nextTheme = getNextTheme(currentTheme);
     themeToggle.setAttribute('aria-label', `Switch to ${nextTheme} theme`);
     themeToggle.setAttribute('aria-pressed', String(currentTheme === 'light'));
+  }
+
+  if (heroThreeApp && heroThreeApp.updateTheme) {
+    heroThreeApp.updateTheme();
   }
 
   if (persist) {
@@ -334,12 +340,470 @@ window.addEventListener('resize', () => {
   }
 });
 
-/* --- Hero Neural Particle Canvas --- */
-function initHeroCanvas() {
+/* --- Three.js "Living Data Field" with Interactive Morphing --- */
+function initHeroThree() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas || typeof THREE === 'undefined') {
+    return false;
+  }
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      alpha: true,
+      antialias: true,
+      powerPreference: 'low-power'
+    });
+    if (!renderer.getContext()) {
+      return false;
+    }
+  } catch (e) {
+    console.warn('WebGL context creation failed:', e);
+    return false;
+  }
+
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+
+  const isMobile = window.innerWidth < 768;
+  const isTouch = window.matchMedia('(hover: none)').matches || isMobile;
+
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, width / height, 1, 2500);
+  camera.position.z = 450;
+
+  // Node count: 120–180 on desktop, 50–80 on mobile (50 mobile, 140 desktop)
+  const nodeCount = isMobile ? 50 : 140;
+  const baseMaxDistance = isMobile ? 70 : 90;
+  const maxLinePairs = Math.min((nodeCount * (nodeCount - 1)) / 2, isMobile ? 100 : 420);
+
+  function getAccentHex() {
+    const isLight = document.documentElement.dataset.theme === 'light';
+    return isLight ? 0xc84b00 : 0xff7a1a;
+  }
+
+  let currentAccent = getAccentHex();
+
+  // Create soft circular sprite for nodes
+  function createCircleTexture() {
+    const spriteCanvas = document.createElement('canvas');
+    spriteCanvas.width = 32;
+    spriteCanvas.height = 32;
+    const ctx = spriteCanvas.getContext('2d');
+    const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+    grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    grad.addColorStop(0.3, 'rgba(255, 255, 255, 0.7)');
+    grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 32, 32);
+    return new THREE.CanvasTexture(spriteCanvas);
+  }
+
+  // Frustum bounds at z=0 for exact pixel-to-world mapping
+  function getFrustumSize() {
+    const vHeight = 2 * Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
+    const vWidth = vHeight * camera.aspect;
+    return { vWidth, vHeight };
+  }
+
+  let { vWidth, vHeight } = getFrustumSize();
+  let spreadX = vWidth * 1.15;
+  let spreadY = vHeight * 1.15;
+  let spreadZ = 220;
+
+  // Influence radius: 150–250px (set to 200px)
+  // Maximum particle movement: 10–20px (set to 14px)
+  let influenceRadius = (200 / height) * vHeight;
+  let maxMovement = (14 / height) * vHeight;
+
+  // Particles & Morph Anchors
+  const particles = [];
+  const positions = new Float32Array(nodeCount * 3);
+
+  const cols = isMobile ? 6 : 12;
+  const rows = Math.ceil(nodeCount / cols);
+  const tiers = isMobile ? 5 : 7;
+
+  for (let i = 0; i < nodeCount; i++) {
+    // 1. Hero: Organic Neural Field
+    const x0 = (Math.random() - 0.5) * spreadX;
+    const y0 = (Math.random() - 0.5) * spreadY;
+    const z0 = (Math.random() - 0.5) * spreadZ;
+
+    // 2. Projects: Slightly More Structured (Subtle Lattice)
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const latticeX = ((col / (cols - 1)) - 0.5) * spreadX * 0.85;
+    const latticeY = ((row / (rows - 1)) - 0.5) * spreadY * 0.75;
+    const latticeZ = Math.sin(col * 0.7 + row * 0.5) * 35;
+    const xProj = x0 * 0.45 + latticeX * 0.55;
+    const yProj = y0 * 0.45 + latticeY * 0.55;
+    const zProj = z0 * 0.45 + latticeZ * 0.55;
+
+    // 3. Experience: More Linear Connections (Horizontal Timeline Tiers)
+    const tier = i % tiers;
+    const tierY = ((tier / (tiers - 1)) - 0.5) * spreadY * 0.65;
+    const xExp = x0 * 0.95;
+    const yExp = y0 * 0.35 + tierY * 0.65;
+    const zExp = z0 * 0.35;
+
+    // 4. Contact: Subtle Particle Convergence Toward Contact Area
+    const contAngle = (i / nodeCount) * Math.PI * 2;
+    const contRadius = 40 + (i % 5) * 16;
+    const targetConvX = Math.cos(contAngle) * contRadius * 1.35;
+    const targetConvY = Math.sin(contAngle) * contRadius * 0.85 - 12;
+    const targetConvZ = ((i % 5) - 2) * 12;
+
+    const xCont = x0 * 0.22 + targetConvX * 0.78;
+    const yCont = y0 * 0.22 + targetConvY * 0.78;
+    const zCont = z0 * 0.22 + targetConvZ * 0.78;
+
+    particles.push({
+      x0, y0, z0,
+      xProj, yProj, zProj,
+      xExp, yExp, zExp,
+      xCont, yCont, zCont,
+      // Idle ambient motion parameters
+      freqX: 0.18 + Math.random() * 0.14,
+      freqY: 0.16 + Math.random() * 0.12,
+      freqZ: 0.14 + Math.random() * 0.10,
+      phaseX: Math.random() * Math.PI * 2,
+      phaseY: Math.random() * Math.PI * 2,
+      phaseZ: Math.random() * Math.PI * 2,
+      // Mouse interaction displacement
+      dispX: 0,
+      dispY: 0,
+      targetDispX: 0,
+      targetDispY: 0
+    });
+
+    const i3 = i * 3;
+    positions[i3] = x0;
+    positions[i3 + 1] = y0;
+    positions[i3 + 2] = z0;
+  }
+
+  const pointGeometry = new THREE.BufferGeometry();
+  pointGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+  const isLightInitial = document.documentElement.dataset.theme === 'light';
+  const pointMaterial = new THREE.PointsMaterial({
+    color: currentAccent,
+    size: isMobile ? 3.5 : 4.5,
+    map: createCircleTexture(),
+    transparent: true,
+    opacity: isLightInitial ? 0.85 : 0.75,
+    depthWrite: false,
+    blending: isLightInitial ? THREE.NormalBlending : THREE.AdditiveBlending
+  });
+
+  const pointCloud = new THREE.Points(pointGeometry, pointMaterial);
+  scene.add(pointCloud);
+
+  // Dynamic Line Segments for Connections
+  const linePositions = new Float32Array(maxLinePairs * 6);
+  const lineColors = new Float32Array(maxLinePairs * 6);
+
+  const lineGeometry = new THREE.BufferGeometry();
+  lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3).setUsage(THREE.DynamicDrawUsage));
+  lineGeometry.setAttribute('color', new THREE.BufferAttribute(lineColors, 3).setUsage(THREE.DynamicDrawUsage));
+
+  const lineMaterial = new THREE.LineBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: isLightInitial ? 0.75 : 0.6,
+    depthWrite: false,
+    blending: isLightInitial ? THREE.NormalBlending : THREE.AdditiveBlending
+  });
+
+  const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
+  scene.add(linesMesh);
+
+  // Mouse Interaction (Subtle Influence, omitted on mobile/touch)
+  const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+  let pointerActive = false;
+  let pointerWorldX = 0;
+  let pointerWorldY = 0;
+  let pointerTimer = null;
+
+  if (!isTouch) {
+    window.addEventListener('pointermove', (e) => {
+      pointerActive = true;
+      const nx = (e.clientX / width) * 2 - 1;
+      const ny = -(e.clientY / height) * 2 + 1;
+      pointerWorldX = (nx * vWidth) / 2;
+      pointerWorldY = (ny * vHeight) / 2;
+
+      mouse.targetX = nx * 20;
+      mouse.targetY = ny * 15;
+
+      clearTimeout(pointerTimer);
+      pointerTimer = setTimeout(() => {
+        pointerActive = false;
+      }, 2500);
+    }, { passive: true });
+
+    window.addEventListener('pointerleave', () => {
+      pointerActive = false;
+      mouse.targetX = 0;
+      mouse.targetY = 0;
+    });
+  }
+
+  // Section Scroll Tracking & Smooth Interpolation
+  const sectionOffsets = { projects: 800, experience: 2000, contact: 3200 };
+
+  function updateSectionOffsets() {
+    const getTop = (id) => {
+      const el = document.getElementById(id);
+      if (!el) return 0;
+      return el.getBoundingClientRect().top + window.scrollY;
+    };
+    sectionOffsets.projects = getTop('projects');
+    sectionOffsets.experience = getTop('experience');
+    sectionOffsets.contact = getTop('contact');
+  }
+
+  updateSectionOffsets();
+
+  let targetScrollY = window.scrollY || 0;
+  let smoothScrollY = targetScrollY;
+
+  window.addEventListener('scroll', () => {
+    targetScrollY = window.scrollY || 0;
+  }, { passive: true });
+
+  function getSectionWeights(scrollY) {
+    const yHero = 0;
+    const yProj = Math.max(sectionOffsets.projects - 250, 400);
+    const yExp = Math.max(sectionOffsets.experience - 250, yProj + 500);
+    const yCont = Math.max(sectionOffsets.contact - 350, yExp + 500);
+
+    let wHero = 0, wProj = 0, wExp = 0, wCont = 0;
+
+    if (scrollY <= yProj) {
+      const t = Math.max(0, Math.min(1, (scrollY - yHero) / (yProj - yHero)));
+      const s = t * t * (3 - 2 * t);
+      wHero = 1 - s;
+      wProj = s;
+    } else if (scrollY <= yExp) {
+      const t = Math.max(0, Math.min(1, (scrollY - yProj) / (yExp - yProj)));
+      const s = t * t * (3 - 2 * t);
+      wProj = 1 - s;
+      wExp = s;
+    } else if (scrollY <= yCont) {
+      const t = Math.max(0, Math.min(1, (scrollY - yExp) / (yCont - yExp)));
+      const s = t * t * (3 - 2 * t);
+      wExp = 1 - s;
+      wCont = s;
+    } else {
+      wCont = 1;
+    }
+
+    return { wHero, wProj, wExp, wCont };
+  }
+
+  function onResize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 2));
+
+    const frustum = getFrustumSize();
+    vWidth = frustum.vWidth;
+    vHeight = frustum.vHeight;
+    spreadX = vWidth * 1.15;
+    spreadY = vHeight * 1.15;
+    influenceRadius = (200 / height) * vHeight;
+    maxMovement = (14 / height) * vHeight;
+
+    updateSectionOffsets();
+  }
+
+  window.addEventListener('resize', onResize);
+
+  function updateTheme() {
+    const isLight = document.documentElement.dataset.theme === 'light';
+    const newColor = getAccentHex();
+    pointMaterial.color.setHex(newColor);
+    pointMaterial.opacity = isLight ? 0.85 : 0.75;
+    pointMaterial.blending = isLight ? THREE.NormalBlending : THREE.AdditiveBlending;
+    lineMaterial.blending = isLight ? THREE.NormalBlending : THREE.AdditiveBlending;
+    pointMaterial.needsUpdate = true;
+    lineMaterial.needsUpdate = true;
+    currentAccent = newColor;
+  }
+
+  let isPageVisible = !document.hidden;
+  document.addEventListener('visibilitychange', () => {
+    isPageVisible = !document.hidden;
+    if (isPageVisible) {
+      if (!reduceMotion && !animationId) {
+        clock.start();
+        animate();
+      }
+    } else {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+  });
+
+  const baseAccent = new THREE.Color(currentAccent);
+  const clock = new THREE.Clock();
+  let animationId = null;
+
+  function animate() {
+    if (!isPageVisible) {
+      animationId = null;
+      return;
+    }
+
+    const elapsed = clock.getElapsedTime();
+
+    // Gentle camera parallax
+    if (!isTouch) {
+      mouse.x += (mouse.targetX - mouse.x) * 0.035;
+      mouse.y += (mouse.targetY - mouse.y) * 0.035;
+      camera.position.x = mouse.x;
+      camera.position.y = mouse.y;
+    }
+    camera.lookAt(scene.position);
+
+    // Smooth scroll interpolation
+    smoothScrollY += (targetScrollY - smoothScrollY) * 0.075;
+    const { wHero, wProj, wExp, wCont } = getSectionWeights(smoothScrollY);
+
+    const pos = pointGeometry.attributes.position.array;
+
+    // Update particle positions
+    for (let i = 0; i < nodeCount; i++) {
+      const p = particles[i];
+      const i3 = i * 3;
+
+      // 3. Scroll morph target interpolation
+      const targetX = p.x0 * wHero + p.xProj * wProj + p.xExp * wExp + p.xCont * wCont;
+      const targetY = p.y0 * wHero + p.yProj * wProj + p.yExp * wExp + p.yCont * wCont;
+      const targetZ = p.z0 * wHero + p.zProj * wProj + p.zExp * wExp + p.zCont * wCont;
+
+      // 2. Idle ambient movement (harmonic oscillation)
+      const ambX = Math.sin(elapsed * p.freqX + p.phaseX) * 6;
+      const ambY = Math.cos(elapsed * p.freqY + p.phaseY) * 6;
+      const ambZ = Math.sin(elapsed * p.freqZ + p.phaseZ) * 4;
+
+      const currentX = targetX + ambX;
+      const currentY = targetY + ambY;
+
+      // 1. Mouse interaction: subtle deflection with smooth falloff (desktop only)
+      if (!isTouch && pointerActive) {
+        const dx = currentX - pointerWorldX;
+        const dy = currentY - pointerWorldY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < influenceRadius && dist > 0.001) {
+          const t = 1 - (dist / influenceRadius);
+          const falloff = t * t * (3 - 2 * t);
+          const push = maxMovement * falloff;
+          p.targetDispX = (dx / dist) * push;
+          p.targetDispY = (dy / dist) * push;
+        } else {
+          p.targetDispX = 0;
+          p.targetDispY = 0;
+        }
+
+        p.dispX += (p.targetDispX - p.dispX) * 0.08;
+        p.dispY += (p.targetDispY - p.dispY) * 0.08;
+      } else {
+        p.dispX = 0;
+        p.dispY = 0;
+      }
+
+      pos[i3] = currentX + p.dispX;
+      pos[i3 + 1] = currentY + p.dispY;
+      pos[i3 + 2] = targetZ + ambZ;
+    }
+
+    pointGeometry.attributes.position.needsUpdate = true;
+
+    // Dynamic Connections
+    let lineVertexIndex = 0;
+    let colorIndex = 0;
+    baseAccent.setHex(currentAccent);
+
+    // In Experience state, horizontal lines are emphasized
+    const dyFactor = 1.0 + wExp * 2.2;
+    // In Contact state, connection radius subtly contracts to match convergence
+    const currentMaxDistance = baseMaxDistance * (1.0 - wCont * 0.28);
+
+    for (let i = 0; i < nodeCount && (lineVertexIndex / 6) < maxLinePairs; i++) {
+      const i3 = i * 3;
+      const x1 = pos[i3];
+      const y1 = pos[i3 + 1];
+      const z1 = pos[i3 + 2];
+
+      for (let j = i + 1; j < nodeCount && (lineVertexIndex / 6) < maxLinePairs; j++) {
+        const j3 = j * 3;
+        const dx = x1 - pos[j3];
+        const dy = y1 - pos[j3 + 1];
+        const dz = z1 - pos[j3 + 2];
+
+        // Linear connection bias in Experience mode
+        const effectiveDist = Math.sqrt(dx * dx + (dy * dyFactor) * (dy * dyFactor) + dz * dz);
+
+        if (effectiveDist < currentMaxDistance) {
+          const alpha = (1 - effectiveDist / currentMaxDistance) * 0.18;
+
+          linePositions[lineVertexIndex++] = x1;
+          linePositions[lineVertexIndex++] = y1;
+          linePositions[lineVertexIndex++] = z1;
+          linePositions[lineVertexIndex++] = pos[j3];
+          linePositions[lineVertexIndex++] = pos[j3 + 1];
+          linePositions[lineVertexIndex++] = pos[j3 + 2];
+
+          lineColors[colorIndex++] = baseAccent.r * alpha;
+          lineColors[colorIndex++] = baseAccent.g * alpha;
+          lineColors[colorIndex++] = baseAccent.b * alpha;
+          lineColors[colorIndex++] = baseAccent.r * alpha;
+          lineColors[colorIndex++] = baseAccent.g * alpha;
+          lineColors[colorIndex++] = baseAccent.b * alpha;
+        }
+      }
+    }
+
+    lineGeometry.setDrawRange(0, lineVertexIndex / 3);
+    lineGeometry.attributes.position.needsUpdate = true;
+    lineGeometry.attributes.color.needsUpdate = true;
+
+    renderer.render(scene, camera);
+    animationId = requestAnimationFrame(animate);
+  }
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    renderer.render(scene, camera);
+  } else {
+    animate();
+  }
+
+  heroThreeApp = { updateTheme, updateSectionOffsets };
+  return true;
+}
+
+/* --- Fallback 2D Canvas Particle System --- */
+function init2DHeroCanvas() {
   const canvas = document.getElementById('hero-canvas');
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
   let particles = [];
   let animationId = null;
   const maxParticles = 65;
@@ -347,8 +811,8 @@ function initHeroCanvas() {
   let mouse = { x: null, y: null, radius: 150 };
 
   function resizeCanvas() {
-    canvas.width = canvas.parentElement.offsetWidth;
-    canvas.height = canvas.parentElement.offsetHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
 
   window.addEventListener('resize', resizeCanvas);
@@ -387,14 +851,12 @@ function initHeroCanvas() {
   }
   initParticles();
 
-  const parent = canvas.parentElement;
-  parent.addEventListener('pointermove', (e) => {
-    const rect = parent.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
+  window.addEventListener('pointermove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
   });
 
-  parent.addEventListener('pointerleave', () => {
+  window.addEventListener('pointerleave', () => {
     mouse.x = null;
     mouse.y = null;
   });
@@ -444,8 +906,28 @@ function initHeroCanvas() {
     animationId = requestAnimationFrame(animate);
   }
 
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !reduceMotion && !animationId) {
+      animate();
+    } else if (document.hidden && animationId) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+  });
+
   if (!reduceMotion) {
     animate();
+  }
+}
+
+/* --- Hero Canvas Master Initializer --- */
+function initHeroCanvas() {
+  if (typeof THREE !== 'undefined') {
+    const success = initHeroThree();
+    if (success) return;
+  }
+  if (!reduceMotion) {
+    init2DHeroCanvas();
   }
 }
 
@@ -459,6 +941,117 @@ function initCardGlows() {
       const y = e.clientY - rect.top;
       card.style.setProperty('--mouse-x', `${x}px`);
       card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+}
+
+/* --- Project Card Subtle 3D Hover & Internal Parallax --- */
+function initProjectCard3D() {
+  const cards = document.querySelectorAll('.project-card');
+  if (cards.length === 0) return;
+
+  const isTouch = window.matchMedia('(hover: none)').matches || window.innerWidth < 768;
+  if (isTouch || reduceMotion) return;
+
+  cards.forEach(card => {
+    let ticking = false;
+
+    card.addEventListener('pointermove', (e) => {
+      if (ticking) return;
+      ticking = true;
+
+      requestAnimationFrame(() => {
+        const rect = card.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) {
+          ticking = false;
+          return;
+        }
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Normalized relative coordinates from center: -1 to +1
+        const nx = (x / rect.width - 0.5) * 2;
+        const ny = (y / rect.height - 0.5) * 2;
+
+        // rotateX: approximately ±2°
+        // rotateY: approximately ±3°
+        // scale: approximately 1.01
+        const rotX = (-ny * 2).toFixed(2);
+        const rotY = (nx * 3).toFixed(2);
+
+        card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.01, 1.01, 1)`;
+
+        // Subtle internal parallax on preview image
+        const preview = card.querySelector('.project-preview');
+        if (preview) {
+          const px = (nx * 2.5).toFixed(1);
+          const py = (ny * 1.5).toFixed(1);
+          preview.style.transform = `translate3d(${px}px, ${py}px, 8px)`;
+        }
+
+        ticking = false;
+      });
+    });
+
+    card.addEventListener('pointerleave', () => {
+      card.style.transform = '';
+      const preview = card.querySelector('.project-preview');
+      if (preview) {
+        preview.style.transform = '';
+      }
+    });
+  });
+}
+
+/* --- Technical Architecture Sections Entrance Animations --- */
+function initTechFlowAnimations() {
+  const flows = document.querySelectorAll('.tech-flow');
+  if (flows.length === 0) return;
+
+  if (reduceMotion) {
+    return;
+  }
+
+  flows.forEach(flow => {
+    flow.classList.add('is-animating');
+    const items = flow.querySelectorAll('.tech-flow-step, .tech-flow-arrow');
+    items.forEach((item, index) => {
+      item.style.transitionDelay = `${index * 85}ms`;
+    });
+  });
+
+  function triggerFlow(flow) {
+    if (flow.classList.contains('flow-animated')) return;
+    flow.classList.add('flow-animated');
+  }
+
+  // Viewport entrance observer
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          triggerFlow(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    flows.forEach(flow => observer.observe(flow));
+  } else {
+    flows.forEach(flow => triggerFlow(flow));
+  }
+
+  // Also trigger when details tag is opened
+  const detailsList = document.querySelectorAll('.tech-details');
+  detailsList.forEach(details => {
+    details.addEventListener('toggle', () => {
+      if (details.open) {
+        const flow = details.querySelector('.tech-flow');
+        if (flow) {
+          requestAnimationFrame(() => triggerFlow(flow));
+        }
+      }
     });
   });
 }
@@ -524,6 +1117,12 @@ function initProjectFilters() {
           project.style.display = 'none';
         }
       });
+
+      setTimeout(() => {
+        if (heroThreeApp && heroThreeApp.updateSectionOffsets) {
+          heroThreeApp.updateSectionOffsets();
+        }
+      }, 300);
     });
   });
 }
@@ -920,6 +1519,8 @@ function initNlpDemo() {
 // Start interactive features
 initHeroCanvas();
 initCardGlows();
+initProjectCard3D();
+initTechFlowAnimations();
 initScrollReveals();
 initProjectFilters();
 initCryptoSimulator();
